@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='assets/font-awesome/css/all.css') }}"
+    />
+
+    <title>Harvest Hub</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg nav-body">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"
+          ><img
+            src="{{ url_for('static', filename='assets/images/harvest-hub.png') }}"
+            alt=""
+            class="nav-logo"
+        /></a>
+
+        <button
+          class="navbar-toggler bg-light"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarText"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link text-light active"
+                aria-current="page"
+                href="{{ url_for('static', filename='products.html') }}"
+                >Products</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-light"
+                href="{{ url_for('static', filename='login.html') }}"
+                >Login</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-light"
+                href="{{ url_for('static', filename='signup.html') }}"
+                >Get Started</a>
+            </li>
+          </ul>
+        </div> -->
+      </div>
+    </nav>
+    <main class="container-fluid">
+      <section class="row text-center mt-3">
+        <h3 class="text-success">Login To Admin Dashboard</h3>
+      </section>
+      <section class="row justify-content-center">
+        <div class="col-md-5 my-md-3 py-5 px-4 bg-success rounded">
+          <form action="">
+            <div class="col-md-10">
+              <p class="text-light">Name</p>
+              <input type="text" class="mb-3 form-control rounded-pill" />
+            </div>
+            <div class="col-md-10">
+              <p class="text-light">Password</p>
+              <input type="password" class="mb-3 form-control rounded-pill" />
+            </div>
+          </form>
+          <div
+            class="col-md-10 d-flex flex-column justify-content-md-end align-items-end col-md-5"
+          >
+            <button class="btn bg-dark text-light col-md-6 my-3">
+              Sign In
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

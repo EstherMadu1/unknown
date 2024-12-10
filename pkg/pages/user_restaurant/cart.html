@@ -1,0 +1,73 @@
+<!-- cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="static/assets/bootstrap/css/bootstrap.css" />
+    <style>
+      .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .card img {
+        border-radius: 10px;
+        height: 150px;
+        object-fit: cover;
+      }
+      .card-body {
+        text-align: center;
+        padding: 10px;
+      }
+      .price {
+        font-size: 1.3rem;
+        color: #28a745;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container my-5">
+      <h2>Your Cart</h2>
+      <div class="row" id="cart-items">
+        <!-- Cart items will be populated here -->
+      </div>
+    </div>
+
+    <script>
+      // Retrieve cart from localStorage
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      // Function to render cart items
+      function renderCart() {
+        const cartItemsContainer = document.getElementById("cart-items");
+        cartItemsContainer.innerHTML = ""; // Clear any existing content
+
+        if (cart.length === 0) {
+          cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+          return;
+        }
+
+        cart.forEach((product) => {
+          const productCard = `
+          <div class="col-md-3 col-lg-2 mb-4">
+            <div class="card">
+              <img src="${product.imgSrc}" class="card-img-top" alt="${product.name}" />
+              <div class="card-body">
+                <h5 class="card-title">${product.name}</h5>
+                <p class="price">${product.price}</p>
+              </div>
+            </div>
+          </div>
+        `;
+          cartItemsContainer.innerHTML += productCard;
+        });
+      }
+
+      // Render the cart when the page loads
+      renderCart();
+    </script>
+  </body>
+</html>

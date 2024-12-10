@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farmer Dashboard</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="static/assets/bootstrap/css/bootstrap.css"
+    />
+    <style>
+      .dashboard-header {
+        margin-top: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row dashboard-header">
+        <div class="col-12">
+          <p>Welcome, {I intend to put farmer name here}</p>
+          <hr />
+          <p>Manage your products below.</p>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <main class="card-body text-center">
+              <h5 class="card-title">Add New Product</h5>
+              <p class="card-text">Upload your products and set prices.</p>
+
+              <button
+                type="button"
+                class="btn btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#addProductModal"
+              >
+                Add Product
+              </button>
+            </main>
+          </div>
+        </div>
+        <div class="col-md-8 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">My Products</h5>
+              <p class="card-text">Here are your current product listings:</p>
+              <div id="productList" class="row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="addProductModal"
+      tabindex="-1"
+      aria-labelledby="addProductModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addProductModalLabel">
+              Add New Product
+            </h5>
+            <button
+              type="button"
+              class="btn-success btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="productForm">
+              <div class="mb-3">
+                <label for="productImage" class="form-label"
+                  >Product Image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="productImage"
+                  accept="image/*"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="productName" class="form-label">Product Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="productName"
+                  placeholder="Enter product name"
+                  required
+                />
+                <p id="invalid-product-name"></p>
+              </div>
+
+              <div class="mb-3">
+                <label for="productPrice" class="form-label">Price (₦)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="productPrice"
+                  placeholder="Enter product price"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" id="saveProductBtn">
+              Save Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="static/assets/jquery-3.7.1.min.js"></script>
+    <script
+      src="static/assets/bootstrap/js/bootstrap.bundle.min.js"
+      type="text/javascript"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        $("#saveProductBtn").click(function () {
+          var productName = $("#productName").val();
+          var productPrice = $("#productPrice").val();
+
+          var productCard = `
+            <div class="col-md-6 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">${productName}</h5>
+                  <p class="card-text">Price: ₦${productPrice}</p>
+                </div>
+              </div>
+            </div>
+          `;
+          $("#productList").append(productCard);
+
+          $("#addProductModal").modal("hide");
+
+          $("#productName").val("");
+          $("#productPrice").val("");
+          $("#productImage").val("");
+        });
+      });
+    </script>
+  </body>
+</html>
