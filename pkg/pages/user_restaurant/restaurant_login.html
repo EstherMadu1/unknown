@@ -1,6 +1,16 @@
 {% include 'navbar.html' %}
+{% set messages = get_flashed_messages(with_categories=True) %}
+{% if messages %}
+  {% for cat, msg in messages %}
+    {% if cat == 'error' %}
+      <div class="alert alert-danger">{{ msg }}</div>
+    {% else %}
+      <div class="alert alert-success">{{ msg }}</div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
-<form action="" method="post" id="login-form" novalidate class="d-none">
+<form action="" method="post" id="login-form" novalidate>
     <div class="rest-bg my-5 py-4 rounded px-3" id="login-rest">
       <h3>LOGIN</h3>
       {{ restaurant.csrf_token() }}

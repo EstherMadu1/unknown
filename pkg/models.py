@@ -46,7 +46,7 @@ class Restaurant(db.Model):
     rest_address = db.Column(db.Text, nullable=False)
     rest_email = db.Column(db.String(45), nullable=False)
     rest_password = db.Column(db.String(45), nullable=False)
-    date_registered = db.Column(db.DateTime, nullable=False)
+    date_registered = db.Column(db.DateTime(), default=lambda: datetime.utcnow())
 
 class Order(db.Model):
     __tablename__ = 'orders'

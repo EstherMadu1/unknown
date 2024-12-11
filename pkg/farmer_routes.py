@@ -1,18 +1,49 @@
-from flask import render_template, redirect, flash, request, url_for
+from flask import render_template, redirect, flash, request, url_for,session
 from werkzeug.security import generate_password_hash, check_password_hash
 from pkg import app
 from pkg.forms import Farmerlogform, Farmersignform
 from pkg.models import Farmer, Restaurant, db
 
 
-@app.route('/login/')
-def login():
-    return render_template('login.html')
-
 
 @app.route('/signup/', methods=['GET','POST'])
 def general_signup():
     return render_template("signup.html")
+
+
+@app.route('/login/')
+def farmer_login(): 
+    farmer = Farmerlogform()
+    if request.method == "GET":
+        return render_template('user_farmer/farmer_login.html',farmer=farmer) 
+    else:
+        if farmer.validate_on_submit():
+            email=request.form.get('email')
+            password=request.form.get('password')
+            print(password)
+            check_record=db.session.query(Farmer).filter(Farmer.farmer_email==email).first()
+            print(check_record) 
+            if check_record:
+                hashed_password = check_record.farmer_password
+                print(hashed_password)
+                chk= check_password_hash(hashed_password,password)
+                print(chk)
+                if chk:
+                    session["loggedin"] = check_record.farm_id
+                    return redirect('/farmer-dashboard/')
+                else:
+                    flash('errors', 'Invalid Password')
+                    return redirect('/farmer-login/')
+            else:
+                flash('errors', 'Invalid Email')
+                return redirect('/farmer-login/')
+        else:
+            for field, errors in farmer.errors.items():
+                for error in errors:
+                    flash(f"Error in {field}: {error}", 'error')
+    
+    return render_template('user_farmer/farmer_login.html',farmer=farmer)
+
 
 # Route for the farmer dashboard
 @app.route('/farmer-dashboard/')
@@ -47,38 +78,4 @@ def handle_farmer_signup():
                 db.session.commit()
                 flash("feedback", 'An account has been created for you')
                 return redirect('/farmer-login/')
-    return render_template('user_farmer/farmer_signup.html', farmer=farmer) 
-    
-
-
-# @app.route('/register/',methods=['POST','GET'])
-# def user_register():
-#     if request.method == 'GET':
-#         return render_template('user/register.html')
-#     else:
-#         #retrieve forms value and validate
-#         email = request.form.get('bizemail')#request.form['email']
-#         password = request.form.get('bizpass')
-#         cpassword = request.form.get('bizconfirm')
-#         name = request.form.get('bizname')
-#         if password != cpassword:
-#             flash('errormsg', 'Password mismatch please try again')
-#             return redirect('/register/')
-#         else:
-#             hashed = generate_password_hash(password)
-#             b = Business(biz_name=name,biz_password=hashed,biz_email=email)
-#             db.session.add(b)
-#             db.session.commit()
-#             flash("feedback", 'An account has been created for you')
-
-#             return redirect('/login/')
-
-@app.route('/farmer-login/', methods=['GET', 'POST'])
-def handle_farmer_login():
-    farmer = Farmerlogform()
-    if farmer.validate_on_submit():
-        email = farmer.email.data
-        password = farmer.password.data  
-        return redirect(url_for('farmer_dashboard'))
-    print(farmer)
-    return render_template('user_farmer/farmer_login.html', farmer=farmer)
+    return render_template('user_farmer/farmer_signup.html', farmer=farmer)    

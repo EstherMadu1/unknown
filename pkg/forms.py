@@ -82,9 +82,10 @@ class Restaurantsignform(FlaskForm):
     name = StringField('Name', validators=[DataRequired(message="Name is required")])
     address = StringField('Address', validators=[DataRequired(message="We would love you to enjoy a smooth delivery, please provide your address")])
     contact_email = StringField('Email', validators=[DataRequired(message="Email is required"), Email(message="Enter a valid email")])
-    contact_num = StringField('Address', validators=[DataRequired(message="We would love to hear from you")])
+    contact_num = StringField('Phone number', validators=[DataRequired(message="We would love to hear from you")])
     password = PasswordField('Password', validators=[DataRequired(message="Password is required")])
-    submit = SubmitField('Login')
+    cpassword = PasswordField('Password', validators=[DataRequired(message="You need to supply this field")])
+    submit = SubmitField('Signup')
     class meta:
         csrf = True
         csrf_time_limit=7200
