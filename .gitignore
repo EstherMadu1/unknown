@@ -2,3 +2,4 @@ instance/
 migrations/
 venv/
 .env
+.gitignore
