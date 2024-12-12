@@ -5,38 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Dashboard</title>
     <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .sidebar {
-            height: 100vh;
-            background-color: #343a40;
-            color: white;
-            position: fixed;
-        }
-        .sidebar .nav-link {
-            color: white;
-        }
-        .sidebar .nav-link.active {
-            background-color: #007bff;
-            border-radius: 5px;
-        }
-        .content {
-            margin-left: 25%;
-            padding: 20px;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                height: auto;
-                position: relative;
-                width: 100%;
-            }
-            .content {
-                margin-left: 0;
-            }
-        }
-    </style>
+    <link href="/static/assets/css/restaurant-dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/style.css" />
+
 </head>
 <body class="container-fluid">
     <div class="row">
@@ -44,6 +15,11 @@
         <div class="col-md-3 sidebar d-flex flex-column p-3">
             <h2 class="text-center">Hello {{farmer_name}}</h2>
             <ul class="nav flex-column">
+              <li>
+                <a class="navbar-brand" href="#"
+          ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"
+        /></a>
+              </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="#" onclick="showSection('orderTracking', this)">Order tracking</a>
                 </li>

@@ -83,10 +83,13 @@ def farmer_login():
 
 @app.route('/farmer-dashboard/')
 def farmer_dashboard():
-    farmer_id = session["loggedin"]
-    farmer = db.session.query(Farmer).filter(Farmer.farm_id == farmer_id).first()
-    if farmer:
-        farmer_name = f"{farmer.farmer_first_name}"
-        return render_template('user_farmer/farmer-dashboard.html', farmer_name=farmer_name)
-    flash('errors', 'You need to log in first!')
-    return redirect('/farmer-login/')
+    # farmer_id = session["loggedin"]
+    # if farmer_id:
+    #     farmer = db.session.query(Farmer).filter(Farmer.farm_id == farmer_id).first()
+    #     if farmer:
+    #         farmer_name = f"{farmer.farmer_first_name}"
+    #         return render_template('user_farmer/farmer-dashboard.html', farmer_name=farmer_name)
+    #     flash('errors', 'You need to log in first!')
+    #     return redirect('/farmer-login/')
+    # else:
+    return render_template('user_farmer/farmer-dashboard.html')
