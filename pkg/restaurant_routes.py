@@ -49,7 +49,7 @@ def rest_signup():
                 flash('Password mismatch, please try again', 'error')
                 return redirect('/restaurant-signup/')
             else:
-                hashed = generate_password_hash(password)
+                hashed = generate_password_hash(password.strip())
                 push_to_db = Restaurant(
                     rest_name=name,
                     rest_phone_number=contact_num,
@@ -71,37 +71,44 @@ def rest_signup():
     return render_template('user_restaurant/restaurant_signup.html', restaurant=restaurant)
 
 
+
+
+
 @app.route('/restaurant-login/', methods=['GET', 'POST'])
-def rest_login(): 
+def rest_login():
     restaurant = Restaurantlogform()
     if request.method == "GET":
-        return render_template('user_restaurant/restaurant_login.html',restaurant=restaurant) 
+        return render_template('user_restaurant/restaurant_login.html', restaurant=restaurant)
     else:
         if restaurant.validate_on_submit():
-            email=request.form.get('email')
-            password=request.form.get('password')
-            print(password)
-            check_record=db.session.query(Restaurant).filter(Restaurant.rest_email==email).first()
-            print(check_record) 
+            email = restaurant.email.data
+            password = restaurant.password.data
+            print(f"Entered Password: {password}") 
+            check_record = db.session.query(Restaurant).filter(Restaurant.rest_email == email).first()
+            print(f"DB Record: {check_record}")  
+
             if check_record:
                 hashed_password = check_record.rest_password
-                print(hashed_password)
-                chk= check_password_hash(hashed_password,password)
-                print(chk)
+                print(f"Hashed Password from DB: {hashed_password}")  
+                chk = check_password_hash(hashed_password.strip(), password.strip())
+                print(f"Password Check Result: {chk}") 
+
                 if chk:
                     session["loggedin"] = check_record.rest_id
                     return redirect('/restaurant-dashboard/')
                 else:
-                    flash('errors', 'Invalid Password')
+                    flash('Invalid Password', 'error')
                     return redirect('/restaurant-login/')
             else:
-                flash('errors', 'Invalid Email')
+                flash('Invalid Email', 'error')
                 return redirect('/restaurant-login/')
         else:
             for field, errors in restaurant.errors.items():
                 for error in errors:
                     flash(f"Error in {field}: {error}", 'error')
-    
-    return render_template('user_restaurant/restaurant_login.html',restaurant=restaurant)
 
+    return render_template('user_restaurant/restaurant_login.html', restaurant=restaurant)
 
+@app.route('/restaurant-dashboard/')
+def restaurant_dashboard():
+    return render_template('user_restaurant/restaurant_dashboard.html')

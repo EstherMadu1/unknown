@@ -1,164 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Dashboard</title>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="static/assets/bootstrap/css/bootstrap.css"
-    />
+    <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      .dashboard-header {
-        margin-top: 20px;
-        text-align: center;
-      }
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+        }
+        .sidebar .nav-link {
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .content {
+            margin-left: 25%;
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                height: auto;
+                position: relative;
+                width: 100%;
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <div class="row dashboard-header">
-        <div class="col-12">
-          <p>Welcome, {I intend to put farmer name here}</p>
-          <hr />
-          <p>Manage your products below.</p>
-        </div>
-      </div>
-      <div class="row mt-4">
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <main class="card-body text-center">
-              <h5 class="card-title">Add New Product</h5>
-              <p class="card-text">Upload your products and set prices.</p>
-
-              <button
-                type="button"
-                class="btn btn-success"
-                data-bs-toggle="modal"
-                data-bs-target="#addProductModal"
-              >
-                Add Product
-              </button>
-            </main>
-          </div>
-        </div>
-        <div class="col-md-8 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title">My Products</h5>
-              <p class="card-text">Here are your current product listings:</p>
-              <div id="productList" class="row"></div>
+</head>
+<body class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 sidebar d-flex flex-column p-3">
+            <h2 class="text-center">Hello {{farmer_name}}</h2>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="showSection('addProduct')">Add Product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('viewProducts')">View Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('reportRestaurant')">Report a Restaurant</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('deliveredOrders')">Delivered Orders</a>
+                </li>
+            </ul>
+            <!-- Logout Button -->
+            <div class="mt-auto text-center">
+                <a href="/logout/" class="btn btn-danger btn-sm">Logout</a>
             </div>
-          </div>
         </div>
-      </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 content">
+            <div id="addProduct" class="section">
+                <h3>Add Product</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" placeholder="Enter product name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="productPrice" placeholder="Enter price">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="protein" value="Protein">
+                                <label class="form-check-label" for="protein">Protein</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="vegetables" value="Vegetables">
+                                <label class="form-check-label" for="vegetables">Vegetables</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="legumes" value="Legumes">
+                                <label class="form-check-label" for="legumes">Legumes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Product</button>
+                </form>
+            </div>
+
+            <div id="viewProducts" class="section" style="display: none;">
+                <h3>View Products</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sample Product 1</td>
+                            <td>$10</td>
+                            <td>Protein</td>
+                        </tr>
+                        <tr>
+                            <td>Sample Product 2</td>
+                            <td>$5</td>
+                            <td>Vegetables</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="reportRestaurant" class="section" style="display: none;">
+                <h3>Report a Restaurant</h3>
+                <form>
+                    <div class="mb-3">
+                        <label for="restaurantName" class="form-label">Restaurant Name</label>
+                        <input type="text" class="form-control" id="restaurantName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="issue" class="form-label">Issue</label>
+                        <textarea class="form-control" id="issue" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Submit Report</button>
+                </form>
+            </div>
+
+            <div id="deliveredOrders" class="section" style="display: none;">
+                <h3>Delivered Orders</h3>
+                <p>List of successfully delivered orders.</p>
+            </div>
+        </div>
     </div>
 
-    <div
-      class="modal fade"
-      id="addProductModal"
-      tabindex="-1"
-      aria-labelledby="addProductModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addProductModalLabel">
-              Add New Product
-            </h5>
-            <button
-              type="button"
-              class="btn-success btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="productForm">
-              <div class="mb-3">
-                <label for="productImage" class="form-label"
-                  >Product Image</label
-                >
-                <input
-                  type="file"
-                  class="form-control"
-                  id="productImage"
-                  accept="image/*"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="productName" class="form-label">Product Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="productName"
-                  placeholder="Enter product name"
-                  required
-                />
-                <p id="invalid-product-name"></p>
-              </div>
-
-              <div class="mb-3">
-                <label for="productPrice" class="form-label">Price (₦)</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="productPrice"
-                  placeholder="Enter product price"
-                  required
-                />
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary" id="saveProductBtn">
-              Save Product
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="static/assets/jquery-3.7.1.min.js"></script>
-    <script
-      src="static/assets/bootstrap/js/bootstrap.bundle.min.js"
-      type="text/javascript"
-    ></script>
     <script>
-      $(document).ready(function () {
-        $("#saveProductBtn").click(function () {
-          var productName = $("#productName").val();
-          var productPrice = $("#productPrice").val();
-
-          var productCard = `
-            <div class="col-md-6 mb-3">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">${productName}</h5>
-                  <p class="card-text">Price: ₦${productPrice}</p>
-                </div>
-              </div>
-            </div>
-          `;
-          $("#productList").append(productCard);
-
-          $("#addProductModal").modal("hide");
-
-          $("#productName").val("");
-          $("#productPrice").val("");
-          $("#productImage").val("");
-        });
-      });
+        function showSection(sectionId) {
+            var sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
     </script>
-  </body>
+
+    <script src="/static/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

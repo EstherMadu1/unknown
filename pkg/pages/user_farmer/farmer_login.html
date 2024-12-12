@@ -1,5 +1,5 @@
 {% include './navbar.html' %}
-<form action="" method="post" id="login-form" novalidate>
+<form action="/farmer-login/" method="post" id="login-form" novalidate>
     <div class="farm-bg my-5 py-4 rounded px-3" id="login-farm">
       <h3>LOGIN</h3>
       {{ farmer.csrf_token() }}

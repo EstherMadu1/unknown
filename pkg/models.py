@@ -19,7 +19,7 @@ class Farmer(db.Model):
     farmer_state_id = db.Column(db.Integer, db.ForeignKey('states.state_id'), nullable=False)
     farmer_address = db.Column(db.Text, nullable=False)
     farmer_username = db.Column(db.String(20), unique=True, nullable=False)
-    farmer_password = db.Column(db.String(20), nullable=False)
+    farmer_password = db.Column(db.String(200), nullable=False)
     date_registered = db.Column(db.DateTime(), default=datetime.utcnow)
 
 class Category(db.Model):
@@ -45,7 +45,7 @@ class Restaurant(db.Model):
     rest_phone_number = db.Column(db.String(20), nullable=False)
     rest_address = db.Column(db.Text, nullable=False)
     rest_email = db.Column(db.String(45), nullable=False)
-    rest_password = db.Column(db.String(45), nullable=False)
+    rest_password = db.Column(db.Text(1000), nullable=False)
     date_registered = db.Column(db.DateTime(), default=lambda: datetime.utcnow())
 
 class Order(db.Model):
