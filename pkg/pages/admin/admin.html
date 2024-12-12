@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harvest Hub Admin Dashboard</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="static/assets/bootstrap/css/bootstrap.css"
+    />
+    <style>
+      /* Sidebar Colors */
+      .sidebar {
+        background-color: #3b6064; /* Green */
+        width: 250px;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar a {
+        color: white;
+        font-weight: 500;
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .sidebar a:hover {
+        background-color: #3cb371; /* Lighter Green */
+        border-radius: 4px;
+        text-decoration: none;
+        padding: 5px;
+        transform: scale(1.05);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          height: 100%;
+          transform: translateX(-100%);
+          z-index: 1000;
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .menu-toggle {
+          display: inline-block;
+        }
+      }
+
+      @media (min-width: 769px) {
+        .menu-toggle {
+          display: none;
+        }
+
+        /* .main-content {
+          margin-left: 250px;
+        } */
+      }
+
+      /* Hidden Section Default */
+      .content-section {
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      /* Header */
+      header {
+        background-color: #e5e5e5; /* Ash */
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      /* Cards */
+      .card {
+        border: none;
+      }
+
+      .card-title {
+        color: #8b4513; /* Brown */
+        font-weight: bold;
+      }
+
+      .card-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hamburger Menu -->
+    <button class="menu-toggle btn btn-success m-2" aria-label="Toggle Sidebar">
+      ☰
+    </button>
+
+    <div class="d-flex">
+      <!-- Sidebar -->
+      <nav class="sidebar vh-100 text-white">
+        <div class="sidebar-header p-3">
+          <img
+            src="static/assets/images/harvest-hub.png"
+            alt="harvesthub logo"
+            href="index.html"
+            class="nav-logo"
+            id="logo-img"
+          />
+        </div>
+        <ul class="nav flex-column p-3">
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="dashboard">
+              <i class="bi bi-house-door"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="farmers">
+              <i class="bi bi-basket"></i> Farmers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="restaurants">
+              <i class="bi bi-shop"></i> Restaurants
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="analytics">
+              <i class="bi bi-bar-chart"></i> Analytics
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="settings">
+              <i class="bi bi-gear"></i> Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="main-content p-0 flex-grow-1">
+        <header class="bg-ash p-3 text-dark">
+          <h3>Welcome <span>{{Admin Name}}</span></h3>
+        </header>
+        <div class="content p-4">
+          <!-- Dashboard Section -->
+          <section id="dashboard" class="content-section active">
+            <h4 class="mb-3">Dashboard Overview</h4>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="card bg-light shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Sales</h5>
+                    <p class="card-text fs-4">₦120,000</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-light shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title">Active Farmers</h5>
+                    <p class="card-text fs-4">50</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-light shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Restaurants</h5>
+                    <p class="card-text fs-4">30</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Farmers Section -->
+          <section id="farmers" class="content-section">
+            <h4>Farmers</h4>
+            <p>Manage all registered farmers here.</p>
+            <table class="table table-bordered bg-white">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Farmer A</td>
+                  <td>farmer.a@example.com</td>
+                  <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- Restaurants Section -->
+          <section id="restaurants" class="content-section">
+            <h4>Restaurants</h4>
+            <p>Manage all registered restaurants here.</p>
+            <table class="table table-bordered bg-white">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Restaurant A</td>
+                  <td>restaurant.a@example.com</td>
+                  <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- Analytics Section -->
+          <section id="analytics" class="content-section">
+            <h4>Analytics</h4>
+            <p>
+              View detailed insights about sales, orders, and user activities.
+            </p>
+            <div class="card bg-light shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Sales Overview</h5>
+                <p class="card-text">
+                  Track daily, weekly, and monthly sales performance here.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Settings Section -->
+          <section id="settings" class="content-section">
+            <h4>Settings</h4>
+            <p>Manage system preferences and configurations.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sidebar toggle for mobile
+      const menuToggle = document.querySelector(".menu-toggle");
+      const sidebar = document.querySelector(".sidebar");
+      const body = document.body;
+
+      // Toggle the sidebar open/close
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+      });
+
+      // Close the sidebar when clicking outside
+      body.addEventListener("click", (event) => {
+        if (
+          !sidebar.contains(event.target) &&
+          !menuToggle.contains(event.target) &&
+          sidebar.classList.contains("open")
+        ) {
+          sidebar.classList.remove("open");
+        }
+      });
+
+      // Navigation functionality
+      const links = document.querySelectorAll(".sidebar a");
+      const sections = document.querySelectorAll(".content-section");
+
+      links.forEach((link) => {
+        link.addEventListener("click", () => {
+          const target = link.getAttribute("data-target");
+
+          sections.forEach((section) => section.classList.remove("active"));
+
+          document.getElementById(target).classList.add("active");
+        });
+      });
+      document
+        .getElementById("logo-img")
+        .addEventListener("click", function () {
+          window.location.href = "index.html";
+        });
+    </script>
+
+    <script
+      src="static/assets/bootstrap/js/bootstrap.bundle.min.js"
+      type="text/javascript"
+    ></script>
+  </body>
+</html>
