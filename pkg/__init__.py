@@ -24,5 +24,5 @@ app = create_app()
 
 
 
-from pkg import restaurant_routes, farmer_routes
+from pkg import restaurant_routes, farmer_routes, admin_routes
 from pkg import forms

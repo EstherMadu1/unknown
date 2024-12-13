@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFError
 from pkg import app
 from pkg.forms import Restaurantsignform, Restaurantlogform
-from pkg.models import db, Restaurant
+from pkg.models import db, Restaurant, Farmer
 
 @app.after_request
 def after_request(response):
@@ -18,7 +18,21 @@ def handle_csrf(e):
 # Route for the home page
 @app.route('/')
 def home():
-    return render_template('index.html')
+    farmer_id = session.get("farmer_loggedin") 
+    restaurant_id = session.get("restaurant_loggedin")
+
+    farmer_deets = None
+    rest_deets = None
+
+    if farmer_id:
+        farmer_deets = db.session.query(Farmer).get(farmer_id)
+        print(farmer_deets)
+    if restaurant_id:
+        rest_deets = db.session.query(Restaurant).get(restaurant_id)
+        print(rest_deets)
+
+    return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets)
+
 
 
 # Route for the products page
@@ -94,7 +108,7 @@ def rest_login():
                 print(f"Password Check Result: {chk}") 
 
                 if chk:
-                    session["loggedin"] = check_record.rest_id
+                    session["restaurant_loggedin"] = check_record.rest_id
                     return redirect('/restaurant-dashboard/')
                 else:
                     flash('Invalid Password', 'error')
@@ -111,4 +125,18 @@ def rest_login():
 
 @app.route('/restaurant-dashboard/')
 def restaurant_dashboard():
+    restaurant_id = session.get("restaurant_loggedin")
+    if restaurant_id:
+        restaurant = db.session.query(Restaurant).filter(Restaurant.rest_id == restaurant_id).first()
+        print(restaurant)
+        if restaurant:
+            restaurant_name = f"{restaurant.rest_name}"
+            return render_template('user_restaurant/restaurant_dashboard.html', restaurant_name=restaurant_name)
+        flash('errors', 'You need to log in first!')
+        return redirect('/restaurant-login/')
     return render_template('user_restaurant/restaurant_dashboard.html')
+
+@app.route("/restaurant-logout/")
+def restaurant_logout():
+    session.pop('restaurant_loggedin', None)
+    return redirect('/')

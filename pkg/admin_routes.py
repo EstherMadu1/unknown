@@ -4,9 +4,9 @@ from pkg import app
 # Route for the admin page
 @app.route('/admin/')
 def admin():
-    return render_template('admin.html')
+    return render_template('admin/admin.html')
 
 # Route for admin login
 @app.route('/admin-login/')
 def admin_login():
-    return render_template('admin_login.html')
+    return render_template('admin/admin_login.html')

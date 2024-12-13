@@ -13,11 +13,11 @@
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 sidebar d-flex flex-column p-3">
-            <h2 class="text-center">Hello {{farmer_name}}</h2>
+            
             <ul class="nav flex-column">
               <li>
                 <a class="navbar-brand" href="#"
-          ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"
+          ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo my-5"
         /></a>
               </li>
                 <li class="nav-item">
@@ -30,10 +30,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="showSection('reportFarmer', this)">Report Farmer</a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/" >Back To Home</a>
+              </li>
             </ul>
             <!-- Logout Button -->
-            <div class="mt-auto text-center">
-                <a href="/logout/" class="btn btn-danger btn-sm">Logout</a>
+             
+            <div class="row mt-auto text-left">
+              <div class="col-7">
+  
+                <p class="">Hello {{restaurant_name}}</p>
+              </div>
+              <div class="col-2">
+                <a href="/restaurant-logout/" class="btn btn-danger btn-sm" type="submit">Logout</a>
+              </div>
             </div>
         </div>
 

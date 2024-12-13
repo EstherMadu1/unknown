@@ -12,7 +12,8 @@ def general_signup():
 
 @app.route('/login/')
 def login():
-    return render_template('login.html')
+    rest_deets='None'
+    return render_template('login.html', rest_deets=rest_deets)
 
 
 
@@ -65,7 +66,7 @@ def farmer_login():
                 chk= check_password_hash(hashed_password,password)
                 print(chk)
                 if chk:
-                    session["loggedin"] = check_record.farm_id
+                    session["farmer_loggedin"] = check_record.farm_id
                     return redirect('/farmer-dashboard/')
                 else:
                     flash('errors', 'Invalid Password')
@@ -83,13 +84,18 @@ def farmer_login():
 
 @app.route('/farmer-dashboard/')
 def farmer_dashboard():
-    # farmer_id = session["loggedin"]
-    # if farmer_id:
-    #     farmer = db.session.query(Farmer).filter(Farmer.farm_id == farmer_id).first()
-    #     if farmer:
-    #         farmer_name = f"{farmer.farmer_first_name}"
-    #         return render_template('user_farmer/farmer-dashboard.html', farmer_name=farmer_name)
-    #     flash('errors', 'You need to log in first!')
-    #     return redirect('/farmer-login/')
-    # else:
-    return render_template('user_farmer/farmer-dashboard.html')
+    farmer_id = session.get("farmer_loggedin")
+    if farmer_id:
+        farmer = db.session.query(Farmer).filter(Farmer.farm_id == farmer_id).first()
+        if farmer:
+            farmer_name = f"{farmer.farmer_first_name}"
+            return render_template('user_farmer/farmer_dashboard.html', farmer_name=farmer_name)
+        flash('errors', 'You need to log in first!')
+        return redirect('/farmer-login/')
+    return render_template('user_farmer/farmer_dashboard.html')
+
+
+@app.route("/farmer-logout/")
+def farmer_logout():
+    session.pop('farmer_loggedin', None)
+    return redirect('/')
