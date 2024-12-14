@@ -41,55 +41,41 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a
-                class="nav-link text-light active"
-                aria-current="page"
-                href="{{ url_for('static', filename='products.html') }}"
-                >Products</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link text-light"
-                href="{{ url_for('static', filename='login.html') }}"
-                >Login</a>
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link text-light"
-                href="{{ url_for('static', filename='signup.html') }}"
-                >Get Started</a>
-            </li>
-          </ul>
-        </div> -->
       </div>
     </nav>
     <main class="container-fluid">
       <section class="row text-center mt-3">
         <h3 class="text-success">Login To Admin Dashboard</h3>
       </section>
+      {% set message = get_flashed_messages(with_categories=True) %}
+                {% if message %}
+                  {% for msg , cat in message %}
+                    {% if cat == 'errors' %}
+                      <div class="alert alert-danger mt-3">{{msg}}</div>
+                    {% else %}
+                      <div class="alert alert-success">{{msg}}</div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
       <section class="row justify-content-center">
         <div class="col-md-5 my-md-3 py-5 px-4 bg-success rounded">
-          <form action="">
+          <form method="POST" action="{{ url_for('admin_login') }}">
+            {{ admin.csrf_token() }}  <!-- CSRF Token -->
+          
             <div class="col-md-10">
-              <p class="text-light">Name</p>
-              <input type="text" class="mb-3 form-control rounded-pill" />
+              {{ admin.username.label(class="text-light") }}
+              {{ admin.username(class="mb-3 admin-control rounded-pill") }}
             </div>
             <div class="col-md-10">
-              <p class="text-light">Password</p>
-              <input type="password" class="mb-3 form-control rounded-pill" />
+              {{ admin.password.label(class="text-light") }}
+              {{ admin.password(class="mb-3 admin-control rounded-pill") }}
             </div>
-          </form>
-          <div
-            class="col-md-10 d-flex flex-column justify-content-md-end align-items-end col-md-5"
-          >
-            <button class="btn bg-dark text-light col-md-6 my-3">
-              Sign In
-            </button>
-          </div>
+          
+            <div class="col-md-10 d-flex justify-content-end">
+              {{ admin.submit(class="btn bg-dark text-light col-md-6 my-3") }}
+            </div>
+          </fo>
+          
         </div>
       </section>
     </main>

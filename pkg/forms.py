@@ -2,6 +2,12 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField,SelectField
 from wtforms.validators import DataRequired, Email
 
+
+class AdminLoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Sign In')
+
 class Farmerlogform(FlaskForm):
     email = StringField('Email', validators=[DataRequired(message="Email is required"), Email(message="Enter a valid email")])
     password = PasswordField('Password', validators=[DataRequired(message="Password is required")])

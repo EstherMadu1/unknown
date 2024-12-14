@@ -5,7 +5,6 @@ from pkg.forms import Farmerlogform, Farmersignform
 from pkg.models import Farmer, Restaurant, db
 
 
-
 @app.route('/signup/', methods=['GET','POST'])
 def general_signup():
     return render_template("signup.html")
@@ -74,10 +73,6 @@ def farmer_login():
             else:
                 flash('errors', 'Invalid Email')
                 return redirect('/farmer-login/')
-        else:
-            for field, errors in farmer.errors.items():
-                for error in errors:
-                    flash(f"Error in {field}: {error}", 'error')
     
     return render_template('user_farmer/farmer_login.html',farmer=farmer)
 

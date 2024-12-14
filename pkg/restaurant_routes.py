@@ -85,9 +85,6 @@ def rest_signup():
     return render_template('user_restaurant/restaurant_signup.html', restaurant=restaurant)
 
 
-
-
-
 @app.route('/restaurant-login/', methods=['GET', 'POST'])
 def rest_login():
     restaurant = Restaurantlogform()
