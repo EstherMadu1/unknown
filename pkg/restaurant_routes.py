@@ -38,7 +38,13 @@ def home():
 # Route for the products page
 @app.route('/products/')
 def products():
-    return render_template('user_restaurant/products.html')
+    products = [
+        {id: 1, 'name': 'Tomato', 'price': 500},
+        {id: 2, 'name': 'Egg', 'price': 5500},
+        {id: 3, 'name': 'Beans', 'price': 100000},
+        {id: 4, 'name': 'Green pepper', 'price': 10000},
+    ]
+    return render_template('user_restaurant/products.html', products=products)
 
 
 # Route for the cart page
