@@ -40,7 +40,15 @@ def home():
 # Route for the products page
 @app.route('/products/')
 def products():
-    products_ = db.session.query(Product).all()
+    product_name = request.args.get('product_name')  # Get the query parameter for product_name
+
+    if product_name:
+        category = Category.query.filter_by(category_name=product_name).first()
+
+        products_ = db.session.query(Product).filter(
+            Product.pro_category_id == category.category_id).all() if category else []
+    else:
+        products_ = db.session.query(Product).all()
 
     return render_template('user_restaurant/products.html',
                            products=products_, base64=base64)
