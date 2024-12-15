@@ -116,7 +116,6 @@ class FarmerAddProductForm(FlaskForm):
     pro_picture = FileField('Product Picture',
                             validators=[FileAllowed(['jpg', 'png', 'jpeg'],
                                                     'Images only!')])
-    pro_status = StringField('Product Status', validators=[DataRequired()])
 
     # Populate the categories dropdown dynamically from your Category model
     def populate_categories(self):
