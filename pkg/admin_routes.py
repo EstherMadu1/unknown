@@ -1,6 +1,6 @@
 from flask import render_template, redirect, flash, session, request, url_for
 from werkzeug.security import check_password_hash
-from pkg import app
+from flask import current_app as app
 from pkg.models import db, Farmer, Restaurant, Admin
 from pkg.forms import AdminLoginForm
 

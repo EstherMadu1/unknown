@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard</title>
+    <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/css/farmer-dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/style.css"/>
+
+</head>
+<body class="container-fluid">
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 sidebar d-flex flex-column p-3">
+        <a class="navbar-brand" href="#"
+        ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"
+        /></a>
+
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="/farmer_add_products.html">Add Product</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="/farmer_view_products.html">View Products</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('reportRestaurant')">Report a Restaurant</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('deliveredOrders')">Delivered Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/">Back to home</a>
+            </li>
+        </ul>
+        <!-- Logout Button -->
+        <div class="mt-auto text-center">
+            <div class="row">
+                <div class="col-md-7">
+                    <p class="text-left">Hello {{farmer_name}}</p>
+                </div>
+                <div class="col-md-4">
+                    <a href="/farmer-logout/" class="btn btn-danger btn-sm" type="submit">Logout</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-9 content">
+
+        <div id="addProduct" class="section">
+            <h3>Add Product</h3>
+
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="{{ form.pro_name.id }}">Product Name</label>
+                    {{ form.pro_name(class="form-control", id=form.pro_name.id) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.pro_category_id.id }}">Category</label>
+                    {{ form.pro_category_id(class="form-control", id=form.pro_category_id.id) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.qua_avail.id }}">Quantity Available</label>
+                    {{ form.qua_avail(class="form-control", id=form.qua_avail.id) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.price_per_unit.id }}">Price per Unit</label>
+                    {{ form.price_per_unit(class="form-control", id=form.price_per_unit.id) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.pro_picture.id }}">Product Picture</label>
+                    {{ form.pro_picture(class="form-control", id=form.pro_picture.id) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.pro_status.id }}">Product Status</label>
+                    {{ form.pro_status(class="form-control", id=form.pro_status.id) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

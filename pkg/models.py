@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class State(db.Model):
     __tablename__ = 'states'
     state_id = db.Column(db.Integer, primary_key=True)
     state_name = db.Column(db.String(15), nullable=False)
+
 
 class Farmer(db.Model):
     __tablename__ = 'farmers'
@@ -22,10 +24,12 @@ class Farmer(db.Model):
     farmer_password = db.Column(db.String(200), nullable=False)
     date_registered = db.Column(db.DateTime(), default=datetime.utcnow)
 
+
 class Category(db.Model):
     __tablename__ = 'category'
     category_id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(25), nullable=False)
+
 
 class Product(db.Model):
     __tablename__ = 'products'
@@ -38,6 +42,7 @@ class Product(db.Model):
     pro_picture = db.Column(db.LargeBinary)
     pro_status = db.Column(db.String(45), nullable=False)
 
+
 class Restaurant(db.Model):
     __tablename__ = 'restaurants'
     rest_id = db.Column(db.Integer, primary_key=True)
@@ -48,6 +53,7 @@ class Restaurant(db.Model):
     rest_password = db.Column(db.Text(1000), nullable=False)
     date_registered = db.Column(db.DateTime(), default=lambda: datetime.utcnow())
 
+
 class Order(db.Model):
     __tablename__ = 'orders'
     order_id = db.Column(db.Integer, primary_key=True)
@@ -56,12 +62,14 @@ class Order(db.Model):
     total_amt = db.Column(db.Numeric(10, 2), nullable=False)
     order_stat = db.Column(db.String(45), nullable=False)
 
+
 class OrderItem(db.Model):
     __tablename__ = 'order_items'
     order_item_id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), nullable=False)
     pro_id = db.Column(db.Integer, db.ForeignKey('products.pro_id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
+
 
 class Payment(db.Model):
     __tablename__ = 'payments'
@@ -71,6 +79,7 @@ class Payment(db.Model):
     pay_status = db.Column(db.String(45), nullable=False)
     reference_num = db.Column(db.String(45), nullable=False)
     date_paid = db.Column(db.DateTime(), default=datetime.utcnow)
+
 
 class Admin(db.Model):
     __tablename__ = 'admin'

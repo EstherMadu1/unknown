@@ -1,9 +1,11 @@
-from flask import render_template, redirect, flash, request,session
+from flask import render_template, redirect, flash, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFError
-from pkg import app
+from flask import current_app as app
 from pkg.forms import Restaurantsignform, Restaurantlogform
-from pkg.models import db, Restaurant, Farmer
+from pkg.models import db, Restaurant, Farmer, Product, Category
+import base64
+
 
 @app.after_request
 def after_request(response):
@@ -15,10 +17,11 @@ def after_request(response):
 def handle_csrf(e):
     return render_template('csrf_error.html', reason=e.description)
 
+
 # Route for the home page
 @app.route('/')
 def home():
-    farmer_id = session.get("farmer_loggedin") 
+    farmer_id = session.get("farmer_loggedin")
     restaurant_id = session.get("restaurant_loggedin")
 
     farmer_deets = None
@@ -34,23 +37,20 @@ def home():
     return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets)
 
 
-
 # Route for the products page
 @app.route('/products/')
 def products():
-    products = [
-        {id: 1, 'name': 'Tomato', 'price': 500},
-        {id: 2, 'name': 'Egg', 'price': 5500},
-        {id: 3, 'name': 'Beans', 'price': 100000},
-        {id: 4, 'name': 'Green pepper', 'price': 10000},
-    ]
-    return render_template('user_restaurant/products.html', products=products)
+    products_ = db.session.query(Product).all()
+
+    return render_template('user_restaurant/products.html',
+                           products=products_, base64=base64)
 
 
 # Route for the cart page
 @app.route('/cart/')
 def cart():
     return render_template('user_restaurant/cart.html/')
+
 
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
 def rest_signup():
@@ -87,7 +87,7 @@ def rest_signup():
             for field, errors in restaurant.errors.items():
                 for error in errors:
                     flash(f"Error in {field}: {error}", 'error')
-    
+
     return render_template('user_restaurant/restaurant_signup.html', restaurant=restaurant)
 
 
@@ -100,15 +100,15 @@ def rest_login():
         if restaurant.validate_on_submit():
             email = restaurant.email.data
             password = restaurant.password.data
-            print(f"Entered Password: {password}") 
+            print(f"Entered Password: {password}")
             check_record = db.session.query(Restaurant).filter(Restaurant.rest_email == email).first()
-            print(f"DB Record: {check_record}")  
+            print(f"DB Record: {check_record}")
 
             if check_record:
                 hashed_password = check_record.rest_password
-                print(f"Hashed Password from DB: {hashed_password}")  
+                print(f"Hashed Password from DB: {hashed_password}")
                 chk = check_password_hash(hashed_password.strip(), password.strip())
-                print(f"Password Check Result: {chk}") 
+                print(f"Password Check Result: {chk}")
 
                 if chk:
                     session["restaurant_loggedin"] = check_record.rest_id
@@ -126,6 +126,7 @@ def rest_login():
 
     return render_template('user_restaurant/restaurant_login.html', restaurant=restaurant)
 
+
 @app.route('/restaurant-dashboard/')
 def restaurant_dashboard():
     restaurant_id = session.get("restaurant_loggedin")
@@ -135,9 +136,9 @@ def restaurant_dashboard():
         if restaurant:
             restaurant_name = f"{restaurant.rest_name}"
             return render_template('user_restaurant/restaurant_dashboard.html', restaurant_name=restaurant_name)
-        flash('errors', 'You need to log in first!')
-        return redirect('/restaurant-login/')
-    return render_template('user_restaurant/restaurant_dashboard.html')
+    flash('errors', 'You need to log in first!')
+    return redirect('/restaurant-login/')
+
 
 @app.route("/restaurant-logout/")
 def restaurant_logout():

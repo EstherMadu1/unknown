@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard</title>
+    <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/css/farmer-dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/style.css"/>
+</head>
+<body class="container-fluid">
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 sidebar d-flex flex-column p-3">
+        <a class="navbar-brand" href="#"
+        ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"
+        /></a>
+
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('farmer_add_product') }}">Add Product</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="#">View Products</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('reportRestaurant')">Report a Restaurant</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('deliveredOrders')">Delivered Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/">Back to home</a>
+            </li>
+        </ul>
+        <!-- Logout Button -->
+        <div class="mt-auto text-center">
+            <div class="row">
+                <div class="col-md-7">
+                    <p class="text-left">Hello {{farmer_name}}</p>
+                </div>
+                <div class="col-md-4">
+                    <a href="/farmer-logout/" class="btn btn-danger btn-sm" type="submit">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9 content">
+        <!-- View Products Section -->
+        <div id="viewProducts" class="section" style="display: block;">
+            <h3>View Products</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for product, category_name in products %}
+                        <tr>
+                            <td>{{ product.pro_name }}</td>
+                            <td>${{ product.price_per_unit }}</td>
+                            <td>{{ category_name }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">No products available.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="/static/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
