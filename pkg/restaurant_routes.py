@@ -4,7 +4,6 @@ from flask_wtf.csrf import CSRFError
 from flask import current_app as app
 from pkg.forms import Restaurantsignform, Restaurantlogform
 from pkg.models import db, Restaurant, Farmer, Product, Category
-import base64
 
 
 @app.after_request
@@ -51,7 +50,7 @@ def products():
         products_ = db.session.query(Product).all()
 
     return render_template('user_restaurant/products.html',
-                           products=products_, base64=base64)
+                           products=products_)
 
 
 # Route for the cart page

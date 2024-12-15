@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app as app
 from pkg.forms import Farmerlogform, Farmersignform, FarmerAddProductForm
 from pkg.models import Farmer, Restaurant, db, Product, Category
+from werkzeug.utils import secure_filename
+import os
 
 
 @app.route('/signup/', methods=['GET', 'POST'])
@@ -127,10 +129,12 @@ def farmer_add_product():
     farmer_id = session.get("farmer_loggedin")
     if not farmer_id or not db.session.query(
             Farmer).filter(Farmer.farm_id == farmer_id).first():
-        flash('errors', 'You need to log in first!')
+        flash('You need to log in first!', 'error')
         return redirect('/farmer-login/')
+
     form = FarmerAddProductForm()
     form.populate_categories()
+
     if request.method == "GET" or not form.validate_on_submit():
         return render_template(
             'user_farmer/farmer_add_products.html',
@@ -143,15 +147,24 @@ def farmer_add_product():
         qua_avail=form.qua_avail.data,
         price_per_unit=form.price_per_unit.data,
         pro_status=form.pro_status.data,
-        farm_id=farmer_id
-        # Get the farmer ID from session
+        farm_id=farmer_id  # Get the farmer ID from session
     )
-    # Handle file upload
+
+    # Handle file upload and save it to static/uploaded directory
     if form.pro_picture.data:
-        new_product.pro_picture = form.pro_picture.data.read(
-        )  # Storing the file as binary
+        # Ensure the static/uploaded directory exists
+        upload_folder = os.path.join(app.root_path, 'static', 'uploaded')
+
+        # Secure the filename and save it
+        filename = secure_filename(form.pro_picture.data.filename)
+        file_path = os.path.join(upload_folder, filename)
+        form.pro_picture.data.save(file_path)
+
+        # Save the relative file path in the database
+        new_product.pro_picture = filename
 
     db.session.add(new_product)
     db.session.commit()
+
     flash('Product added successfully!', 'success')
     return redirect(url_for('farmer_dashboard'))
