@@ -113,7 +113,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ product.pro_name }}</h5>
                     <p class="price">₦{{ '%.2f' % product.price_per_unit }}</p>
-                    <button class="btn btn-success btn-buy">Add to Cart</button>
+                    <button class="btn btn-success btn-buy" data-id="{{ product.pro_id }}">Add to Cart</button>
                 </div>
             </div>
         </div>
@@ -133,6 +133,7 @@
     
     <script src="/static/assets/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="/static/assets/jquery-3.7.1.min.js"></script>
+
     <script>
       $(document).ready(function(){
         var cartCount =  0

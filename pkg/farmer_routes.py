@@ -132,7 +132,6 @@ def farmer_add_product():
     form = FarmerAddProductForm()
     form.populate_categories()
     if request.method == "GET" or not form.validate_on_submit():
-
         return render_template(
             'user_farmer/farmer_add_products.html',
             form=form)

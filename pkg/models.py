@@ -39,7 +39,7 @@ class Product(db.Model):
     qua_avail = db.Column(db.Float, nullable=False)
     price_per_unit = db.Column(db.Numeric(10, 2), nullable=False)
     farm_id = db.Column(db.Integer, db.ForeignKey('farmers.farm_id'), nullable=False)
-    pro_picture = db.Column(db.LargeBinary)
+    pro_picture = db.Column(db.String(100), nullable=True)
     pro_status = db.Column(db.String(45), nullable=False)
 
 

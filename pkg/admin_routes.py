@@ -34,18 +34,28 @@ def admin_login():
 
 @app.route('/admin-dashboard/')
 def admin_show_farmer():
-    admin_id = session.get("admin_loggedin")
-    if admin_id:
-        admin = db.session.query(Admin).all()
-    else:
+    adminn_id = session.get("admin_loggedin")
+    
+    if not adminn_id:
         flash("Please log in to access the dashboard.", "warning")
         return redirect(url_for('admin_login'))
 
+    admin = db.session.query(Admin).filter(Admin.admin_id == adminn_id).first()
+    if not admin:
+        flash("Invalid session. Please log in again.", "warning")
+        return redirect(url_for('admin_login'))
+
+
+    admin_name = f"{admin.admin_username}"
     farmers_deets = db.session.query(Farmer).all()
     rest_deets = db.session.query(Restaurant).all()
-    admin_deets = db.session.query(Admin).all()
-    print(admin_deets)
-    return render_template('admin/admin.html',farmers_deets=farmers_deets,rest_deets=rest_deets, admin_deets=admin_deets)
+
+    return render_template(
+        'admin/admin.html',
+        admin_name=admin_name,
+        farmers_deets=farmers_deets,
+        rest_deets=rest_deets
+    )
 
 
 @app.route('/delete-farmer/<int:farm_id>', methods=['POST'])

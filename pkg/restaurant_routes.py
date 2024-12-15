@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, request, session
+from flask import render_template, redirect, flash, request, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf.csrf import CSRFError
 from flask import current_app as app
@@ -55,9 +55,9 @@ def products():
 
 
 # Route for the cart page
-@app.route('/cart/')
-def cart():
-    return render_template('user_restaurant/cart.html/')
+# @app.route('/cart/')
+# def cart():
+#     return render_template('user_restaurant/cart.html/')
 
 
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
@@ -127,10 +127,6 @@ def rest_login():
             else:
                 flash('Invalid Email', 'error')
                 return redirect('/restaurant-login/')
-        else:
-            for field, errors in restaurant.errors.items():
-                for error in errors:
-                    flash(f"Error in {field}: {error}", 'error')
 
     return render_template('user_restaurant/restaurant_login.html', restaurant=restaurant)
 
@@ -152,3 +148,84 @@ def restaurant_dashboard():
 def restaurant_logout():
     session.pop('restaurant_loggedin', None)
     return redirect('/')
+
+
+# Add a product to the cart
+@app.route('/cart/add', methods=['POST'])
+def add_to_cart():
+    product_id = request.json.get('product_id')
+    quantity = request.json.get('quantity', 1)
+
+    # Retrieve the product from the database
+    product = db.session.query(Product).filter_by(pro_id=product_id).first()
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    # Initialize cart in the session if not present
+    if 'cart' not in session:
+        session['cart'] = {}
+
+    cart = session['cart']
+    if str(product_id) in cart:
+        cart[str(product_id)]['quantity'] += quantity
+    else:
+        cart[str(product_id)] = {
+            'product_name': product.pro_name,
+            'price': product.price_per_unit,
+            'quantity': quantity
+        }
+
+    session.modified = True
+    return jsonify({"message": "Product added to cart successfully"}), 200
+
+
+# View cart page
+@app.route('/cart/', methods=['GET', 'POST'])
+def view_cart():
+    # if request.method == 'POST':
+    #     data = request.get_json()
+    #     product_id = data.get('product_id')
+
+    #     if product_id:
+    #         # Logic to add the product to the cart (e.g., save in session or database)
+    #         # Example: Add product_id to a session-based cart
+    #         if "cart" not in session:
+    #             session["cart"] = []
+    #         session["cart"].append(product_id)
+
+    #         return {"message": "Product added to cart successfully!"}, 200
+    #     else:
+    #         return {"error": "Product ID is missing"}, 400
+
+    # # Render the cart page for GET requests
+    # cart_items = session.get("cart", [])
+    # You can fetch product details using the IDs in `cart_items` if needed
+    
+    cart_items = get_cart_items()
+    return render_template('user_restaurant/cart.html', cart_items=cart_items)
+
+
+
+# Update cart item
+@app.route('/cart/update', methods=['POST'])
+def update_cart():
+    product_id = request.json.get('product_id')
+    quantity = request.json.get('quantity')
+
+    if 'cart' in session and str(product_id) in session['cart']:
+        session['cart'][str(product_id)]['quantity'] = quantity
+        session.modified = True
+        return jsonify({"message": "Cart updated successfully"}), 200
+    return jsonify({"error": "Product not in cart"}), 404
+
+
+# Remove a product from the cart
+@app.route('/cart/remove', methods=['POST'])
+def remove_from_cart():
+    product_id = request.json.get('product_id')
+
+    if 'cart' in session and str(product_id) in session['cart']:
+        session['cart'].pop(str(product_id))
+        session.modified = True
+        return jsonify({"message": "Product removed from cart"}), 200
+    return jsonify({"error": "Product not in cart"}), 404
