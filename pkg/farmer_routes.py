@@ -146,8 +146,7 @@ def farmer_add_product():
         pro_category_id=form.pro_category_id.data,
         qua_avail=form.qua_avail.data,
         price_per_unit=form.price_per_unit.data,
-        pro_status=form.pro_status.data,
-        farm_id=farmer_id  # Get the farmer ID from session
+        farm_id=farmer_id  
     )
 
     # Handle file upload and save it to static/uploaded directory

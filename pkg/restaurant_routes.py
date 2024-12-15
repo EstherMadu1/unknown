@@ -48,6 +48,9 @@ def products():
             Product.pro_category_id == category.category_id).all() if category else []
     else:
         products_ = db.session.query(Product).all()
+    for product in products_:
+        print(product.pro_picture)
+        
 
     return render_template('user_restaurant/products.html',
                            products=products_)
@@ -149,7 +152,6 @@ def restaurant_logout():
     return redirect('/')
 
 
-# Add a product to the cart
 @app.route('/cart/add', methods=['POST'])
 def add_to_cart():
     product_id = request.json.get('product_id')
@@ -178,53 +180,44 @@ def add_to_cart():
     return jsonify({"message": "Product added to cart successfully"}), 200
 
 
-# View cart page
-@app.route('/cart/', methods=['GET', 'POST'])
-def view_cart():
-    # if request.method == 'POST':
-    #     data = request.get_json()
-    #     product_id = data.get('product_id')
+# # View cart page
+# @app.route('/cart/', methods=['GET', 'POST'])
+# def view_cart():
+#     # if request.method == 'POST':
+#     #     data = request.get_json()
+#     #     product_id = data.get('product_id')
 
-    #     if product_id:
-    #         # Logic to add the product to the cart (e.g., save in session or database)
-    #         # Example: Add product_id to a session-based cart
-    #         if "cart" not in session:
-    #             session["cart"] = []
-    #         session["cart"].append(product_id)
-
-    #         return {"message": "Product added to cart successfully!"}, 200
-    #     else:
-    #         return {"error": "Product ID is missing"}, 400
-
-    # # Render the cart page for GET requests
-    # cart_items = session.get("cart", [])
-    # You can fetch product details using the IDs in `cart_items` if needed
+#     #     if product_id:
+#     #         # Logic to add the product to the cart (e.g., save in session or database)
+#     #         # Example: Add product_id to a session-based cart
+#     #         if "cart" not in session:
+ 
     
-    cart_items = get_cart_items()
-    return render_template('user_restaurant/cart.html', cart_items=cart_items)
+#     cart_items = get_cart_items()
+#     return render_template('user_restaurant/cart.html', cart_items=cart_items)
 
 
 
-# Update cart item
-@app.route('/cart/update', methods=['POST'])
-def update_cart():
-    product_id = request.json.get('product_id')
-    quantity = request.json.get('quantity')
+# # Update cart item
+# @app.route('/cart/update', methods=['POST'])
+# def update_cart():
+#     product_id = request.json.get('product_id')
+#     quantity = request.json.get('quantity')
 
-    if 'cart' in session and str(product_id) in session['cart']:
-        session['cart'][str(product_id)]['quantity'] = quantity
-        session.modified = True
-        return jsonify({"message": "Cart updated successfully"}), 200
-    return jsonify({"error": "Product not in cart"}), 404
+#     if 'cart' in session and str(product_id) in session['cart']:
+#         session['cart'][str(product_id)]['quantity'] = quantity
+#         session.modified = True
+#         return jsonify({"message": "Cart updated successfully"}), 200
+#     return jsonify({"error": "Product not in cart"}), 404
 
 
-# Remove a product from the cart
-@app.route('/cart/remove', methods=['POST'])
-def remove_from_cart():
-    product_id = request.json.get('product_id')
+# # Remove a product from the cart
+# @app.route('/cart/remove', methods=['POST'])
+# def remove_from_cart():
+#     product_id = request.json.get('product_id')
 
-    if 'cart' in session and str(product_id) in session['cart']:
-        session['cart'].pop(str(product_id))
-        session.modified = True
-        return jsonify({"message": "Product removed from cart"}), 200
-    return jsonify({"error": "Product not in cart"}), 404
+#     if 'cart' in session and str(product_id) in session['cart']:
+#         session['cart'].pop(str(product_id))
+#         session.modified = True
+#         return jsonify({"message": "Product removed from cart"}), 200
+#     return jsonify({"error": "Product not in cart"}), 404

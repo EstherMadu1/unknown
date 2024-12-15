@@ -39,8 +39,8 @@ class Product(db.Model):
     qua_avail = db.Column(db.Float, nullable=False)
     price_per_unit = db.Column(db.Numeric(10, 2), nullable=False)
     farm_id = db.Column(db.Integer, db.ForeignKey('farmers.farm_id'), nullable=False)
-    pro_picture = db.Column(db.String(100), nullable=True)
-    pro_status = db.Column(db.String(45), nullable=False)
+    pro_picture = db.Column(db.String(100))
+ 
 
 
 class Restaurant(db.Model):
@@ -50,7 +50,7 @@ class Restaurant(db.Model):
     rest_phone_number = db.Column(db.String(20), nullable=False)
     rest_address = db.Column(db.Text, nullable=False)
     rest_email = db.Column(db.String(45), nullable=False)
-    rest_password = db.Column(db.Text(1000), nullable=False)
+    rest_password = db.Column(db.Text(100), nullable=False)
     date_registered = db.Column(db.DateTime(), default=lambda: datetime.utcnow())
 
 
