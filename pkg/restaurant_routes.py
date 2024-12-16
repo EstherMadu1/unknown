@@ -4,7 +4,7 @@ from flask_wtf.csrf import CSRFError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from pkg.forms import Restaurantsignform, Restaurantlogform
-from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem
+from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem, Order, OrderItem
 
 
 @app.after_request
@@ -96,7 +96,6 @@ def get_cart():
     return render_template('user_restaurant/cart.html', cart_items=cart_details)
 
 
-
 @app.route('/cart/add/', methods=['POST'])
 def add_to_cart():
     if 'restaurant_loggedin' not in session:
@@ -168,6 +167,47 @@ def remove_from_cart(cart_item_id):
         flash('Cart item not found!', 'error')
 
     return redirect('/cart/')
+
+
+@app.route('/checkout/', methods=['POST'])
+def checkout():
+    if 'restaurant_loggedin' not in session:
+        flash('You need to log in to proceed with checkout!', 'error')
+        return redirect('/restaurant-login/')
+
+    restaurant_id = session['restaurant_loggedin']
+    cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+
+    if not cart_items:
+        flash('Your cart is empty!', 'error')
+        return redirect('/cart/')
+
+    total_amt = sum(
+        item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
+        for item in cart_items
+    )
+
+    new_order = Order(
+        restaurant_id=restaurant_id,
+        total_amt=total_amt,
+        order_stat='Pending'
+    )
+    db.session.add(new_order)
+    db.session.commit()
+
+    for item in cart_items:
+        order_item = OrderItem(
+            order_id=new_order.order_id,
+            pro_id=item.pro_id,
+            quantity=item.cart_quantity
+        )
+        db.session.add(order_item)
+        db.session.delete(item)
+
+    db.session.commit()
+
+    flash('Order placed successfully!', 'success')
+    return redirect('/restaurant-dashboard/')
 
 
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
