@@ -4,7 +4,7 @@ from flask_wtf.csrf import CSRFError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from pkg.forms import Restaurantsignform, Restaurantlogform
-from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem, Order, OrderItem
+from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem, Order, OrderItem, Admin
 
 
 @app.after_request
@@ -23,18 +23,23 @@ def handle_csrf(e):
 def home():
     farmer_id = session.get("farmer_loggedin")
     restaurant_id = session.get("restaurant_loggedin")
+    admin_id = adminn_id = session.get("admin_loggedin")
 
     farmer_deets = None
     rest_deets = None
+    admin_deets = None
 
     if farmer_id:
         farmer_deets = db.session.query(Farmer).get(farmer_id)
-        print(farmer_deets)
+        
     if restaurant_id:
         rest_deets = db.session.query(Restaurant).get(restaurant_id)
-        print(rest_deets)
+    
+    if admin_id:
+        admin_deets = db.session.query(Admin).get(admin_id)
 
-    return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets)
+    return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets, admin_deets=admin_deets)
+
 
 
 # Route for the products page
@@ -210,6 +215,21 @@ def checkout():
     return redirect('/restaurant-dashboard/')
 
 
+
+# @app.route('/delivered-orders/')
+# def restaurant_orders():
+#     restaurant_id = session.get("restaurant_loggedin")
+    
+#     if not restaurant_id
+#     restaurant = Restaurant.query.get(restaurant_id)
+#     for order in restaurant.orders:
+#         print(f"Order ID: {order.order_id}, Date: {order.order_date}, Status: {order.order_stat}")
+#     for item in order.order_items:
+#         print(f"  Product: {item.product.pro_name}, Category: {item.product.category.category_name}, Quantity: {item.quantity}")
+#     return 'check'
+    
+    
+
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
 def rest_signup():
     restaurant = Restaurantsignform()
@@ -299,71 +319,3 @@ def restaurant_logout():
     session.pop('restaurant_loggedin', None)
     return redirect('/')
 
-# @app.route('/cart/add', methods=['POST'])
-# def add_to_cart():
-#     product_id = request.json.get('product_id')
-#     quantity = request.json.get('quantity', 1)
-#
-#     # Retrieve the product from the database
-#     product = db.session.query(Product).filter_by(pro_id=product_id).first()
-#     if not product:
-#         return jsonify({"error": "Product not found"}), 404
-#
-#     # Initialize cart in the session if not present
-#     if 'cart' not in session:
-#         session['cart'] = {}
-#
-#     cart = session['cart']
-#     if str(product_id) in cart:
-#         cart[str(product_id)]['quantity'] += quantity
-#     else:
-#         cart[str(product_id)] = {
-#             'product_name': product.pro_name,
-#             'price': product.price_per_unit,
-#             'quantity': quantity
-#         }
-#
-#     session.modified = True
-#     return jsonify({"message": "Product added to cart successfully"}), 200
-
-
-# # View cart page
-# @app.route('/cart/', methods=['GET', 'POST'])
-# def view_cart():
-#     # if request.method == 'POST':
-#     #     data = request.get_json()
-#     #     product_id = data.get('product_id')
-
-#     #     if product_id:
-#     #         # Logic to add the product to the cart (e.g., save in session or database)
-#     #         # Example: Add product_id to a session-based cart
-#     #         if "cart" not in session:
-
-
-#     cart_items = get_cart_items()
-#     return render_template('user_restaurant/cart.html', cart_items=cart_items)
-
-
-# # Update cart item
-# @app.route('/cart/update', methods=['POST'])
-# def update_cart():
-#     product_id = request.json.get('product_id')
-#     quantity = request.json.get('quantity')
-
-#     if 'cart' in session and str(product_id) in session['cart']:
-#         session['cart'][str(product_id)]['quantity'] = quantity
-#         session.modified = True
-#         return jsonify({"message": "Cart updated successfully"}), 200
-#     return jsonify({"error": "Product not in cart"}), 404
-
-
-# # Remove a product from the cart
-# @app.route('/cart/remove', methods=['POST'])
-# def remove_from_cart():
-#     product_id = request.json.get('product_id')
-
-#     if 'cart' in session and str(product_id) in session['cart']:
-#         session['cart'].pop(str(product_id))
-#         session.modified = True
-#         return jsonify({"message": "Product removed from cart"}), 200
-#     return jsonify({"error": "Product not in cart"}), 404

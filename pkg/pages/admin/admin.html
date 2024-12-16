@@ -14,6 +14,7 @@
       type="text/css"
       href="/static/assets/css/admin.css"
     />
+    <link rel="stylesheet" type="text/css" href="/static/assets/font-awesome/css/all.css" />
 
   </head>
   <body>
@@ -24,7 +25,7 @@
 
     <div class="d-flex">
       <!-- Sidebar -->
-      <nav class="sidebar vh-100 text-white">
+      <nav class="sidebar vh-100 d-flex flex-column text-white">
         <div class="sidebar-header p-3">
           <img
             src="/static/assets/images/harvest-hub.png"
@@ -37,41 +38,59 @@
         <ul class="nav flex-column p-3">
           <li class="nav-item">
             <a href="#" class="nav-link text-white" data-target="dashboard">
-              <i class="bi bi-house-door"></i> Dashboard
+              <i class="fas fa-home"></i> Dashboard
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link text-white" data-target="farmers">
-              <i class="bi bi-basket"></i> Farmers
+              <i class="fas fa-user-friends"></i> Farmers
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link text-white" data-target="restaurants">
-              <i class="bi bi-shop"></i> Restaurants
+              <i class="fas fa-utensils"></i> Restaurants
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="products">
+              <i class="fas fa-box"></i> Products By Category
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" data-target="farmer-products">
+              <i class="fas fa-seedling"></i> Products And Farmers
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link text-white" data-target="payments">
-              <i class="bi bi-bar-chart"></i> Payments
+              <i class="fas fa-money-check-alt"></i> Payments
             </a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link text-white" data-target="analytics">
-              <i class="bi bi-bar-chart"></i> Analytics
+              <i class="fas fa-chart-line"></i> Analytics
             </a>
           </li>
+      
           <li class="nav-item">
-            <a href="#" class="nav-link text-white" data-target="settings">
-              <i class="bi bi-gear"></i> Settings
+            <a href="/" class="nav-link text-white">
+              <i class="fas fa-home"></i> Home
             </a>
           </li>
         </ul>
+        <div class="mt-auto p-3 text-center">
+          <a href="/admin-logout/" class="btn btn-danger btn-sm no-hover">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+        
       </nav>
+      
 
       <!-- Main Content -->
       <div class="main-content p-0 flex-grow-1">
         <header class="bg-ash p-3 text-dark">
-          <h3>Welcome <span>{{admin_name}}</span></h3>
+          <h3>Welcome <span>{{admin_name |capitalize}}</span></h3>
         </header>
         <div class="content p-4">
           <!-- Dashboard Section -->
@@ -189,6 +208,77 @@
               </tbody>
             </table>
           </section>
+
+          <!-- Products Sections -->
+
+          <section id="products" class="content-section">
+            <h4>Products</h4>
+            <p>View all listed products here.</p>
+            <table class="table table-bordered bg-white table-responsive mt-5">
+              <thead class="table-success">
+                <tr>
+                  <th>S/N</th>
+                  <th>Category</th>
+                  <th>Products</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cat in category %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ cat.category_name }}</td>
+                  <td>
+                    {% for show in cat.products %}
+                      {% if show.prod_name == '' %}
+                        <p>{{"NO Products added yet"}}</p>
+                      {% else %}
+                      <p>{{ show.pro_name }}</p>
+                      {% endif %}
+                    {% endfor %}
+                  </td>
+                  {#<td>{{ farmer.farmer_first_name }}</td>
+                   #}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            
+          </section>
+
+          <!-- Products Sections -->
+
+          <section id="farmer-products" class="content-section">
+            <h4>Products By Farmers</h4>
+            <p>View all products listed by which farmers.</p>
+            <table class="table table-bordered bg-white table-responsive mt-5">
+              <thead class="table-success">
+                <tr>
+                  <th>S/N</th>
+                  <th>Farmers</th>
+                  <th>Products</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for farmer in farmers_deets %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ farmer.farm_name }}</td>
+                  <td>
+                    {% for show in farmer.products %}
+                      
+                      <p>{{ show.pro_name }}</p>
+                      
+                    {% endfor %}
+                  </td>
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            
+          </section>
+
+          <!-- Payments Section -->
           <section id="payments" class="content-section">
 
           </section>

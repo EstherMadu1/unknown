@@ -23,12 +23,15 @@ class Farmer(db.Model):
     farmer_username = db.Column(db.String(20), unique=True, nullable=False)
     farmer_password = db.Column(db.String(200), nullable=False)
     date_registered = db.Column(db.DateTime(), default=datetime.utcnow)
+    
+    products = db.relationship('Product', back_populates='farmer', lazy=True)
 
 
 class Category(db.Model):
     __tablename__ = 'category'
     category_id = db.Column(db.Integer, primary_key=True)
     category_name = db.Column(db.String(25), nullable=False)
+    products = db.relationship('Product', back_populates='category') 
 
 
 class Product(db.Model):
@@ -40,9 +43,10 @@ class Product(db.Model):
     price_per_unit = db.Column(db.Numeric(10, 2), nullable=False)
     farm_id = db.Column(db.Integer, db.ForeignKey('farmers.farm_id'), nullable=False)
     pro_picture = db.Column(db.String(100))
- 
-
-
+    
+    order_items = db.relationship('OrderItem', back_populates='product', lazy=True)  # One-to-Many
+    category = db.relationship('Category', back_populates='products') 
+    farmer = db.relationship('Farmer', back_populates='products', lazy=True)
 class Restaurant(db.Model):
     __tablename__ = 'restaurants'
     rest_id = db.Column(db.Integer, primary_key=True)
@@ -51,7 +55,8 @@ class Restaurant(db.Model):
     rest_address = db.Column(db.Text, nullable=False)
     rest_email = db.Column(db.String(45), nullable=False)
     rest_password = db.Column(db.Text(100), nullable=False)
-    date_registered = db.Column(db.DateTime(), default=lambda: datetime.utcnow())
+    date_registered = db.Column(db.DateTime(), default=lambda: datetime.utcnow())   
+    orders = db.relationship('Order', back_populates='restaurant', lazy=True)
 
 
 class Order(db.Model):
@@ -61,6 +66,9 @@ class Order(db.Model):
     order_date = db.Column(db.DateTime(), default=datetime.utcnow)
     total_amt = db.Column(db.Numeric(10, 2), nullable=False)
     order_stat = db.Column(db.String(45), nullable=False)
+    
+    restaurant = db.relationship('Restaurant', back_populates='orders')  # Backref to Restaurant
+    order_items = db.relationship('OrderItem', back_populates='order', lazy=True)
 
 
 class OrderItem(db.Model):
@@ -69,6 +77,9 @@ class OrderItem(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), nullable=False)
     pro_id = db.Column(db.Integer, db.ForeignKey('products.pro_id'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
+    
+    order = db.relationship('Order', back_populates='order_items')  # Backref to Order
+    product = db.relationship('Product', back_populates='order_items')
 
 
 class Payment(db.Model):

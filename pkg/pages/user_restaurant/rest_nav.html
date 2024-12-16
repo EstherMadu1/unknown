@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Dashboard</title>
+    <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/css/restaurant-dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/style.css" />
+
+</head>
+<body class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 sidebar d-flex flex-column p-3">
+            
+            <ul class="nav flex-column">
+              <li>
+                <a class="navbar-brand" href="#"
+          ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo my-5"
+        /></a>
+              </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="showSection('orderTracking', this)">Order tracking</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('deliveredOrders', this)">Delivered Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('reportFarmer', this)">Report Farmer</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/" >Back To Home</a>
+              </li>
+            </ul>
+            <!-- Logout Button -->
+             
+            <div class="row mt-auto text-left">
+              <div class="col-7">
+  
+                <p class="">Hello {{restaurant_name}}</p>
+              </div>
+              <div class="col-2">
+                <a href="/restaurant-logout/" class="btn btn-danger btn-sm" type="submit">Logout</a>
+              </div>
+            </div>
+        </div>

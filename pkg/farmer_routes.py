@@ -14,8 +14,8 @@ def general_signup():
 
 @app.route('/login/')
 def login():
-    rest_deets = 'None'
-    return render_template('login.html', rest_deets=rest_deets)
+
+    return render_template('login.html')
 
 
 @app.route('/farmer-signup/', methods=['GET', 'POST'])

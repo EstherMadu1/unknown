@@ -1,0 +1,45 @@
+{% extends user_restaurant/rest_nav.html %}
+
+<div class="col-md-9 content">
+
+    <div id="addProduct" class="section">
+        <h3>Delivered Orders</h3>
+
+        <table class="table table-bordered bg-white table-responsive mt-5">
+            <thead class="table-success">
+              <tr>
+                <th>#</th>
+                <th>Farmer Name</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for farmer in farmers_deets %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ farmer.farm_name }}</td>
+                <td>{{ farmer.farmer_email }}</td>
+                <td>{{ farmer.farmer_first_name }}</td>
+                <td>
+                  <form
+                    action="/admin/"
+                    method="post"
+                    style="display:inline;"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-danger btn-sm"
+                      onclick="return confirm('Are you sure you want to delete this farmer?')"
+                    >
+                      Delete Account
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>

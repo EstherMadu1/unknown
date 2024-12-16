@@ -42,6 +42,18 @@
             <p class="m-0 ms-2">Hello {{rest_deets.rest_name}}</p>
           </li>
 
+          {% elif admin_deets %}
+          <li class="nav-item mx-md-4">
+            <a class="nav-link text-light" href="/products/">View Products</a>
+          </li>
+          <li class="nav-item d-flex flex-row align-items-center">
+            <a href="/admin-dashboard/" class="text-white">
+              <i class="fa-solid fa-user" style="font-size: 16px;"></i>
+            </a>
+            <p class="m-0 ms-2">Hello {{admin_deets.admin_username}}</p>
+          </li>
+
+
           {% else %}
           <li class="nav-item">
             <a class="nav-link text-light active" aria-current="page" href="/products/">Products</a>

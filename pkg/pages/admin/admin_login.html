@@ -60,15 +60,15 @@
       <section class="row justify-content-center">
         <div class="col-md-5 my-md-3 py-5 px-4 bg-success rounded">
           <form method="POST" action="{{ url_for('admin_login') }}">
-            {{ admin.csrf_token() }}  <!-- CSRF Token -->
+            {{ admin.csrf_token() }}  
           
             <div class="col-md-10">
               {{ admin.username.label(class="text-light") }}
-              {{ admin.username(class="mb-3 admin-control rounded-pill") }}
+              {{ admin.username(class="mb-3 form-control rounded-pill") }}
             </div>
             <div class="col-md-10">
               {{ admin.password.label(class="text-light") }}
-              {{ admin.password(class="mb-3 admin-control rounded-pill") }}
+              {{ admin.password(class="mb-3 form-control rounded-pill") }}
             </div>
           
             <div class="col-md-10 d-flex justify-content-end">

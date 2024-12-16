@@ -21,6 +21,12 @@
   transition: 0.8s ease-in-out;
 }
 
+a.no-hover:hover {
+  color: inherit; /* Keep the current text color */
+  background-color: inherit; /* Keep the current background */
+  text-decoration: none; /* Remove underline or any other decoration */
+}
+
 
 @media (max-width: 768px) {
   .sidebar {
