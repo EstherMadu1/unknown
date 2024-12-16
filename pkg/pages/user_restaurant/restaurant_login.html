@@ -10,35 +10,45 @@
   {% endfor %}
 {% endif %}
 
-<form action="" method="post" id="login-form" novalidate>
-    <div class="rest-bg my-5 py-4 rounded px-3" id="login-rest">
-      <h3>LOGIN</h3>
-      {{ restaurant.csrf_token() }}
-      <div class="mb-3">
-        {{restaurant.email.label}}<br>
-         {{restaurant.email(class_='form-control',id='rest-password')}}
-         {% if restaurant.email.errors %}
-            {% for error in restaurant.email.errors %}
-                <span class="text-danger">{{error}}</span>
-            {% endfor %}
-        {% endif %}
+<div class="row justify-content-center my-md-5">
+  <div class="col-md-5">
+    <form action="" method="post" id="login-form" novalidate>
+      <div class="rest-bg my-5 py-4 rounded px-3" id="login-rest">
+        <h3>LOGIN</h3>
+        {{ restaurant.csrf_token() }}
+        <div class="mb-3">
+          {{restaurant.email.label}}<br>
+           {{restaurant.email(class_='form-control',id='rest-password')}}
+           {% if restaurant.email.errors %}
+              {% for error in restaurant.email.errors %}
+                  <span class="text-danger">{{error}}</span>
+              {% endfor %}
+          {% endif %}
+        </div>
+        <div class="mb-3">
+  
+          {{restaurant.password.label}}
+          {{restaurant.password(class_='form-control')}}
+          {% if restaurant.password.errors %}
+              {% for error in restaurant.password.errors %}
+                  <span class="text-danger">{{error}}</span>
+              {% endfor %}
+          {% endif %}
+        </div>
+        <div class="mb-3 col-md-5">
+  
+           {{restaurant.submit(class_='col-12 btn btn-success')}}
+        </div>
       </div>
-      <div class="mb-3">
-        <!-- <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" /> -->
-        {{restaurant.password.label}}
-        {{restaurant.password(class_='form-control')}}
-        {% if restaurant.password.errors %}
-            {% for error in restaurant.password.errors %}
-                <span class="text-danger">{{error}}</span>
-            {% endfor %}
-        {% endif %}
-      </div>
-      <div class="mb-3 col-md-5">
-        <!-- <button class="col-12 btn btn-success">Login</button> -->
-         {{restaurant.submit(class_='col-12 btn btn-success')}}
-      </div>
+    </form>
     </div>
-  </form>
+      
+
+  <div class="col-md-5">
+    <img src="/static/assets/images/chef.png" alt="restaurant" class="img-fluid" />
+  </div>
+
+  
+</div>
 
 {% include 'footer.html' %}

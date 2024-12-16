@@ -1,24 +1,5 @@
 {% include 'navbar.html' %}
 <main class="container-fluid">
-  <!-- Nav tabs -->
-  <!-- <ul class="nav nav-pills" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="farmer-tab" data-bs-toggle="tab" data-bs-target="#farmer" type="button"
-        role="tab" aria-controls="farmer" aria-selected="true">Farmer</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab"
-        aria-controls="profile" aria-selected="false">Restaurant</button>
-    </li>
-  </ul> -->
-
-  <!-- Tab panes -->
-  <!-- <div class="tab-content">
-    <div class="tab-pane active" id="farmer" role="tabpanel" aria-labelledby="farmer-tab" tabindex="0">...</div>
-    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">...</div>
-    <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab" tabindex="0">...</div>
-    <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab" tabindex="0">...</div>
-  </div> -->
   
   <div class="row justify-content-center">
     <div class="col-md-6 my-5">
@@ -40,10 +21,10 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <img src="/static/assets/images/farmgirl.png" alt="farmer" class="img-fluid d-none" id="farm-img" />
       <img src="/static/assets/images/chef.png" alt="restaurant" class="img-fluid d-none" id="rest-img" />
-    </div>
+    </div> -->
   </div>
 </main>
 
@@ -76,16 +57,6 @@
       }
     });
 
-    // Display images based on role selection
-    $("#flexRadioDefault1").change(function () {
-      $("#farm-img").removeClass("d-none").addClass("d-block");
-      $("#rest-img").removeClass("d-block").addClass("d-none");
-    });
-
-    $("#flexRadioDefault2").change(function () {
-      $("#rest-img").removeClass("d-none").addClass("d-block");
-      $("#farm-img").removeClass("d-block").addClass("d-none");
-    });
   });
 </script>
 

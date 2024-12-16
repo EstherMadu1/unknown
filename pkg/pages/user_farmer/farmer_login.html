@@ -1,34 +1,42 @@
 {% include './navbar.html' %}
-<form action="/farmer-login/" method="post" id="login-form" novalidate>
-    <div class="farm-bg my-5 py-4 rounded px-3" id="login-farm">
-      <h3>LOGIN</h3>
-      {{ farmer.csrf_token() }}
-      <div class="mb-3">
 
-         {{farmer.email.label}}<br>
-         {{farmer.email(class_='form-control',id='contact-email')}}
-         {% if farmer.email.errors %}
-            {% for error in farmer.email.errors %}
-                <span class="text-danger">{{error}}</span>
-            {% endfor %}
-        {% endif %}
-      </div>
-      <div class="mb-3">
-        <!-- <label for="password">Password</label>
-        <input type="text" class="form-control" id="password" /> -->
-        {{farmer.password.label}}
-        {{farmer.password(class_='form-control', id='farmer-pwd')}}
-        {% if farmer.password.errors %}
-            {% for error in farmer.password.errors %}
-                <span class="text-danger">{{error}}</span>
-            {% endfor %}
-        {% endif %}
-      </div>
-      <div class="mb-3 col-md-5">
-        <!-- <button class="col-12 btn btn-success">Login</button> -->
-        {{farmer.submit(class_='col-12 btn btn-success')}}
-      </div>
+<div class="row justify-content-center my-5">
+    <div class="col-md-5">
+      <form action="/farmer-login/" method="post" id="login-form" novalidate>
+        <div class="farm-bg my-5 py-4 rounded px-3" id="login-farm">
+          <h3>LOGIN</h3>
+          {{ farmer.csrf_token() }}
+          <div class="mb-3">
+
+            {{farmer.email.label}}<br>
+            {{farmer.email(class_='form-control',id='contact-email')}}
+            {% if farmer.email.errors %}
+                {% for error in farmer.email.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <!-- <label for="password">Password</label>
+            <input type="text" class="form-control" id="password" /> -->
+            {{farmer.password.label}}
+            {{farmer.password(class_='form-control', id='farmer-pwd')}}
+            {% if farmer.password.errors %}
+                {% for error in farmer.password.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+            {% endif %}
+          </div>
+          <div class="mb-3 col-md-5">
+            <!-- <button class="col-12 btn btn-success">Login</button> -->
+            {{farmer.submit(class_='col-12 btn btn-success')}}
+          </div>
+        </div>
+    </form>
     </div>
-  </form>
+    <div class="col-md-5">
+      <img src="/static/assets/images/farmgirl.png" alt="farmer" class="img-fluid" id="farm-img" />
+    </div>
+  </div>
 
 {% include 'footer.html' %}
