@@ -2,6 +2,16 @@
 
 <div class="row justify-content-center my-5">
     <div class="col-md-5">
+{% set messages = get_flashed_messages(with_categories=True) %}
+{% if messages %}
+  {% for cat, msg in messages %}
+    {% if cat == 'errors' %}
+      <div class="alert alert-danger">{{ msg }}</div>
+    {% else %}
+      <div class="alert alert-success">{{ msg }}</div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
       <form action="/farmer-login/" method="post" id="login-form" novalidate>
         <div class="farm-bg my-5 py-4 rounded px-3" id="login-farm">
           <h3>LOGIN</h3>

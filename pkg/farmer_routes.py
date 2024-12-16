@@ -79,10 +79,10 @@ def farmer_login():
                     session["farmer_loggedin"] = check_record.farm_id
                     return redirect('/farmer-dashboard/')
                 else:
-                    flash('errors', 'Invalid Password')
+                    flash('Invalid Password','errors' )
                     return redirect('/farmer-login/')
             else:
-                flash('errors', 'Invalid Email')
+                flash('Invalid Email', 'errors')
                 return redirect('/farmer-login/')
 
     return render_template('user_farmer/farmer_login.html', farmer=farmer)

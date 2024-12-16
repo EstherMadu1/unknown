@@ -62,7 +62,7 @@
                     {% for product, category_name in products %}
                         <tr>
                             <td>{{ product.pro_name }}</td>
-                            <td>${{ product.price_per_unit }}</td>
+                            <td>&#8358;{{ product.price_per_unit }}</td>
                             <td>{{ category_name }}</td>
                         </tr>
                     {% else %}

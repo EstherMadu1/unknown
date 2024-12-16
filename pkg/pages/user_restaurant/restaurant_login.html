@@ -1,17 +1,17 @@
-{% include 'navbar.html' %}
+{% include './navbar.html' %}
+
+<div class="row justify-content-center my-md-5">
+  <div class="col-md-5">
 {% set messages = get_flashed_messages(with_categories=True) %}
 {% if messages %}
   {% for cat, msg in messages %}
-    {% if cat == 'error' %}
+    {% if cat == 'errors' %}
       <div class="alert alert-danger">{{ msg }}</div>
     {% else %}
       <div class="alert alert-success">{{ msg }}</div>
     {% endif %}
   {% endfor %}
 {% endif %}
-
-<div class="row justify-content-center my-md-5">
-  <div class="col-md-5">
     <form action="" method="post" id="login-form" novalidate>
       <div class="rest-bg my-5 py-4 rounded px-3" id="login-rest">
         <h3>LOGIN</h3>

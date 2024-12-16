@@ -104,7 +104,7 @@ def get_cart():
 @app.route('/cart/add/', methods=['POST'])
 def add_to_cart():
     if 'restaurant_loggedin' not in session:
-        flash('You need to log in to add items to the cart!', 'error')
+        flash('You need to log in as a restaurant owner to add items to the cart!', 'errors')
         return redirect('/restaurant-login/')
 
     restaurant_id = session['restaurant_loggedin']
