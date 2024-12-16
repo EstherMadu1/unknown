@@ -87,3 +87,11 @@ class Admin(db.Model):
     admin_username = db.Column(db.String(75), unique=True, nullable=False)
     admin_password = db.Column(db.String(200), nullable=False)
     admin_last_login = db.Column(db.DateTime, nullable=False)
+
+class CartItem(db.Model):
+    __tablename__ = 'cart_items'
+    cart_item_id = db.Column(db.Integer, primary_key=True)
+    pro_id = db.Column(db.Integer, db.ForeignKey('products.pro_id'), nullable=False)
+    cart_quantity = db.Column(db.Integer, nullable=False)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.rest_id'), nullable=False)
+    

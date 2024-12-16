@@ -1,9 +1,10 @@
-from flask import render_template, redirect, flash, request, session, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_wtf.csrf import CSRFError
 from flask import current_app as app
+from flask import render_template, redirect, flash, request, session
+from flask_wtf.csrf import CSRFError
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from pkg.forms import Restaurantsignform, Restaurantlogform
-from pkg.models import db, Restaurant, Farmer, Product, Category
+from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem
 
 
 @app.after_request
@@ -37,29 +38,136 @@ def home():
 
 
 # Route for the products page
-@app.route('/products/')
+@app.route('/products/', methods=['GET'])
 def products():
     product_name = request.args.get('product_name')  # Get the query parameter for product_name
 
     if product_name:
         category = Category.query.filter_by(category_name=product_name).first()
-
         products_ = db.session.query(Product).filter(
-            Product.pro_category_id == category.category_id).all() if category else []
+            Product.pro_category_id == category.category_id
+        ).all() if category else []
     else:
         products_ = db.session.query(Product).all()
-    for product in products_:
-        print(product.pro_picture)
-        
 
-    return render_template('user_restaurant/products.html',
-                           products=products_)
+    cart_items = []
+    if 'restaurant_loggedin' in session:
+        restaurant_id = session['restaurant_loggedin']
+        user_cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+        for item in user_cart_items:
+            product = db.session.query(Product).filter_by(pro_id=item.pro_id).first()
+            if product:
+                cart_items.append({
+                    'pro_id': item.pro_id,
+                    'cart_item_id': item.cart_item_id,
+                    'product_name': product.pro_name,
+                    'quantity': item.cart_quantity,
+                    'price_per_unit': float(product.price_per_unit),
+                    'total_price': float(item.cart_quantity * product.price_per_unit)
+                })
+
+    return render_template('user_restaurant/products.html', products=products_, cart_items=cart_items)
 
 
 # Route for the cart page
-# @app.route('/cart/')
-# def cart():
-#     return render_template('user_restaurant/cart.html/')
+@app.route('/cart/', methods=['GET'])
+def get_cart():
+    if 'restaurant_loggedin' not in session:
+        flash('You need to log in to view your cart!', 'error')
+        return redirect('/restaurant-login/')
+
+    restaurant_id = session['restaurant_loggedin']
+    cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+
+    cart_details = []
+    for item in cart_items:
+        product = db.session.query(Product).filter_by(pro_id=item.pro_id).first()
+        if product:
+            cart_details.append({
+                'pro_id': item.pro_id,
+                'pro_picture': product.pro_picture,
+                'cart_item_id': item.cart_item_id,
+                'product_name': product.pro_name,
+                'quantity': item.cart_quantity,
+                'price_per_unit': float(product.price_per_unit),
+                'total_price': float(item.cart_quantity * product.price_per_unit)
+            })
+
+    return render_template('user_restaurant/cart.html', cart_items=cart_details)
+
+
+
+@app.route('/cart/add/', methods=['POST'])
+def add_to_cart():
+    if 'restaurant_loggedin' not in session:
+        flash('You need to log in to add items to the cart!', 'error')
+        return redirect('/restaurant-login/')
+
+    restaurant_id = session['restaurant_loggedin']
+    pro_id = request.form.get('pro_id')
+    quantity = request.form.get('quantity', type=int)
+
+    if not pro_id or quantity <= 0:
+        flash('Invalid product or quantity', 'error')
+        return redirect('/products/')
+
+    existing_cart_item = db.session.query(CartItem).filter_by(pro_id=pro_id, restaurant_id=restaurant_id).first()
+
+    if existing_cart_item:
+        existing_cart_item.cart_quantity += quantity
+    else:
+        new_cart_item = CartItem(
+            pro_id=pro_id,
+            cart_quantity=quantity,
+            restaurant_id=restaurant_id
+        )
+        db.session.add(new_cart_item)
+
+    db.session.commit()
+    flash('Item added to cart!', 'success')
+    return redirect('/cart/')
+
+
+@app.route('/cart/update/<int:cart_item_id>/', methods=['POST'])
+def update_cart(cart_item_id):
+    if 'restaurant_loggedin' not in session:
+        flash('You need to log in to update the cart!', 'error')
+        return redirect('/restaurant-login/')
+
+    quantity = request.form.get('quantity', type=int)
+
+    if quantity <= 0:
+        flash('Invalid quantity!', 'error')
+        return redirect('/cart/')
+
+    cart_item = db.session.query(CartItem).filter_by(cart_item_id=cart_item_id).first()
+
+    if cart_item:
+        cart_item.cart_quantity = quantity
+        db.session.commit()
+        flash('Cart item updated!', 'success')
+    else:
+        flash('Cart item not found!', 'error')
+
+    return redirect('/cart/')
+
+
+@app.route('/cart/remove/<int:cart_item_id>/', methods=['POST'])
+def remove_from_cart(cart_item_id):
+    if 'restaurant_loggedin' not in session:
+        flash('You need to log in to remove items from the cart!', 'error')
+        return redirect('/restaurant-login/')
+
+    cart_item = db.session.query(CartItem).filter_by(cart_item_id=cart_item_id).first()
+
+    if cart_item:
+        db.session.delete(cart_item)
+        db.session.commit()
+        flash('Item removed from cart!', 'success')
+    else:
+        flash('Cart item not found!', 'error')
+
+    return redirect('/cart/')
 
 
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
@@ -151,33 +259,32 @@ def restaurant_logout():
     session.pop('restaurant_loggedin', None)
     return redirect('/')
 
-
-@app.route('/cart/add', methods=['POST'])
-def add_to_cart():
-    product_id = request.json.get('product_id')
-    quantity = request.json.get('quantity', 1)
-
-    # Retrieve the product from the database
-    product = db.session.query(Product).filter_by(pro_id=product_id).first()
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    # Initialize cart in the session if not present
-    if 'cart' not in session:
-        session['cart'] = {}
-
-    cart = session['cart']
-    if str(product_id) in cart:
-        cart[str(product_id)]['quantity'] += quantity
-    else:
-        cart[str(product_id)] = {
-            'product_name': product.pro_name,
-            'price': product.price_per_unit,
-            'quantity': quantity
-        }
-
-    session.modified = True
-    return jsonify({"message": "Product added to cart successfully"}), 200
+# @app.route('/cart/add', methods=['POST'])
+# def add_to_cart():
+#     product_id = request.json.get('product_id')
+#     quantity = request.json.get('quantity', 1)
+#
+#     # Retrieve the product from the database
+#     product = db.session.query(Product).filter_by(pro_id=product_id).first()
+#     if not product:
+#         return jsonify({"error": "Product not found"}), 404
+#
+#     # Initialize cart in the session if not present
+#     if 'cart' not in session:
+#         session['cart'] = {}
+#
+#     cart = session['cart']
+#     if str(product_id) in cart:
+#         cart[str(product_id)]['quantity'] += quantity
+#     else:
+#         cart[str(product_id)] = {
+#             'product_name': product.pro_name,
+#             'price': product.price_per_unit,
+#             'quantity': quantity
+#         }
+#
+#     session.modified = True
+#     return jsonify({"message": "Product added to cart successfully"}), 200
 
 
 # # View cart page
@@ -191,11 +298,10 @@ def add_to_cart():
 #     #         # Logic to add the product to the cart (e.g., save in session or database)
 #     #         # Example: Add product_id to a session-based cart
 #     #         if "cart" not in session:
- 
-    
+
+
 #     cart_items = get_cart_items()
 #     return render_template('user_restaurant/cart.html', cart_items=cart_items)
-
 
 
 # # Update cart item

@@ -1,81 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/static/assets/bootstrap/css/bootstrap.css"
-    />
-    <link rel="stylesheet" href="/static/assets/css/style.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/static/assets/font-awesome/css/all.css"
-    />
 
-    <title>Harvest Hub</title>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg nav-body">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#"
-          ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"
-        /></a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/static/assets/bootstrap/css/bootstrap.css" />
+  <link rel="stylesheet" href="/static/assets/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="/static/assets/font-awesome/css/all.css" />
 
-        <button
-          class="navbar-toggler bg-light"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarText"
-          aria-controls="navbarText"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+  <title>Harvest Hub</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg nav-body">
+    <div class="container">
+      <a class="navbar-brand" href="#"><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo" /></a>
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           {% if farmer_deets %}
-            <li class="nav-item mt-md-3 mx-md-4">
-              <a class="nav-link text-light" href="/products/">View products</a>
-            </li>
-            <li class="nav-item d-flex flex-column align-items-center mt-1">
-                <a href="/farmer-dashboard/" class="text-white">
-                    <i class="fa-solid fa-user" style="font-size: 16px;"></i>
-                </a>
-              <p>Hello {{farmer_deets.farmer_first_name}}</p>
-            </li>
+          <li class="nav-item mx-md-4">
+            <a class="nav-link text-light" href="/products/">View products</a>
+          </li>
+          <li class="nav-item d-flex flex-row align-items-center">
+            <a href="/farmer-dashboard/" class="text-white">
+              <i class="fa-solid fa-user fs-6" style="font-size: 16px;"></i>
+            </a>
+            <p class="m-0 ms-2">Hello {{farmer_deets.farmer_first_name}}</p>
+          </li>
           {% elif rest_deets %}
-          <li class="nav-item mt-md-3 mx-md-4">
+          <li class="nav-item mx-md-4">
             <a class="nav-link text-light" href="/products/">Shop now</a>
           </li>
-          <li class="nav-item d-flex flex-column align-items-center mt-1">
+          <li class="nav-item d-flex flex-row align-items-center">
             <a href="/restaurant-dashboard/" class="text-white">
-                <i class="fa-solid fa-user" style="font-size: 16px;"></i>
+              <i class="fa-solid fa-user" style="font-size: 16px;"></i>
             </a>
-            <p>Hello {{rest_deets.rest_name}}</p>
+            <p class="m-0 ms-2">Hello {{rest_deets.rest_name}}</p>
           </li>
 
           {% else %}
-            <li class="nav-item">
-              <a
-                class="nav-link text-light active"
-                aria-current="page"
-                href="/products/"
-                >Products</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="/login/">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="/signup/">Get Started</a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link text-light active" aria-current="page" href="/products/">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/login/">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/signup/">Get Started</a>
+          </li>
 
-            {% endif %}
-          </ul>
-        </div>
+          {% endif %}
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>

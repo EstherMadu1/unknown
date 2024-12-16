@@ -1,5 +1,161 @@
-{% include "index_nav.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>HarvestHub Produce E-Commerce</title>
+    <link rel="stylesheet" type="text/css" href="/static/assets/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/assets/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/assets/font-awesome/css/all.css"/>
+    <style>
+        .card {
+          border: none;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
+        .card img {
+          border-radius: 10px;
+          height: 150px;
+          object-fit: cover;
+        }
 
-{% include 'footer.html' %}
+        .card-body {
+          text-align: center;
+          padding: 10px;
+        }
+
+        .price {
+          font-size: 1.3rem;
+          color: #28a745;
+          font-weight: bold;
+        }
+
+        footer {
+          background-color: #f8f9fa;
+          padding: 10px;
+          text-align: center;
+          margin-top: 30px;
+          font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg nav-body">
+    <div class="container">
+        <a class="navbar-brand" href="#"><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"/></a>
+        <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-3 align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/products">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/cart" type="button"
+                       class="btn btn-light bg-transparent border-0 text-white btn-sm position-relative">
+                        <i class="fa-solid fa-cart-shopping fs-6"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ cart_items | length }}
+                <span class="visually-hidden">cart items</span>
+              </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h3 class="mb-4">Your Cart</h3>
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-md-8">
+            {% if cart_items %}
+            {% for item in cart_items %}
+            <div class="card mb-3 border rounded-4">
+                <div class="card-body" style="padding: 1rem 2rem 1rem 1.5rem;">
+                    <div class="d-flex align-items-center gap-4">
+                        <div>
+                            <img src="{{ url_for('static', filename='uploaded/' + item.pro_picture) }}"
+                         class="card-img-top mb-3 border" alt="{{ item.product_name }}"/>
+                        </div>
+                        <div class="text-start flex-grow-1">
+                            <h5>{{ item.product_name }}</h5>
+                            <p class="text-muted">${{ "%.2f" | format(item.price_per_unit) }}</p>
+                        </div>
+                        <div>
+                            <form method="POST" action="/cart/update/{{ item.cart_item_id }}/">
+                                <input type="number" name="quantity" class="form-control" value="{{ item.quantity }}"
+                                       min="1" style="width: 100px;" onchange="this.form.submit();">
+                            </form>
+                        </div>
+                        <div class="text-end">
+                            <form method="POST" action="/cart/remove/{{ item.cart_item_id }}/">
+                                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted">Your cart is empty.</p>
+            {% endif %}
+        </div>
+
+        <!-- Summary Section -->
+        <div class="col-md-4">
+            <div class="card border rounded-4">
+                <div class="card-body" style="padding: 2rem 2rem;">
+                    <h5 class="card-title text-start">Order Summary</h5>
+                    <hr>
+                    <p class="d-flex justify-content-between">
+                        <span>Subtotal:</span>
+                        <span>${{ "%.2f" | format(cart_items | map(attribute='total_price') | sum) }}</span>
+                    </p>
+                    <p class="d-flex justify-content-between">
+                        <span>Tax:</span>
+                        <span>${{ "%.2f" | format((cart_items | map(attribute='total_price') | sum) * 0.1) }}</span>
+                    </p>
+                    <h6 class="d-flex justify-content-between">
+                        <span>Total:</span>
+                        <span>${{ "%.2f" | format((cart_items | map(attribute='total_price') | sum) * 1.1) }}</span>
+                    </h6>
+                    <form method="POST" action="/checkout/">
+                        <button class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2024 HarvestHub. All rights reserved.</p>
+</footer>
+
+<script src="/static/assets/bootstrap/js/bootstrap.bundle.js"></script>
+<script src="/static/assets/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+      var cartCount = 0;
+      $(".btn-buy").each(function () {
+        $(this).click(function () {
+          cartCount++;
+          $("#change-num").text(cartCount);
+          $("#change-num").removeClass("bg-danger").addClass('bg-success');
+        });
+      });
+    })
+</script>
+</body>
+
+</html>
