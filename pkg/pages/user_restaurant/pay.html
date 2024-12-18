@@ -1,0 +1,29 @@
+{% include 'user_restaurant/rest_nav.html' %}
+        <!-- Checkout Section -->
+        <div class="col-md-9 content">
+            <!-- Order Payment-->
+            <div class="section">
+
+                <h1>Make Payment to promote your business</h1>
+    <p>Click on confirmation button when you are ready to pay </p>
+
+    <form action="/pay/" method="post">
+        <div class="mb-3">
+            <p>Amount &#8358; {{ trxdeets.pay_amt }}</p>
+        </div>
+        <div class="mb-3">
+            <label>Restaurant Name: {{ trxdeets.rest.rest_name }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="text-danger">Transaction Ref: {{ trxdeets.reference_num }}</label>
+            <label>Please take note of the above transaction ref</label>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-secondary noround" type="button" onclick="document.location.href='/dashboard/'">Cancel</button>
+            <button class="btn btn-danger noround" type="submit">Confirm Payment</button>
+        </div>
+    </form>
+    
+</div>
+
+

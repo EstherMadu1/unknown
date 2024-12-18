@@ -1,0 +1,43 @@
+{% include 'user_restaurant/rest_nav.html' %}
+        <!-- Checkout Section -->
+        <div class="col-md-9 content">
+            <!-- Order Payment-->
+            {% set messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+              {% for cat, msg in messages %}
+                {% if cat == 'errormsg' %}
+                  <div class="alert alert-danger">{{ msg }}</div>
+                {% else %}
+                  <div class="alert alert-success">{{ msg }}</div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            <div id="checkout" class="section">
+                <h3>CheckOut</h3>
+                <p>Pay for your orders here.</p>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-2">
+                        <p class="bg-success text-white p-3 rounded-3 " id="total">{{get_total_amt}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2">
+                    <button class="btn btn-danger" id="cancelPay">
+                        Cancel
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a href="/pay/" class="bg bg-success text-white p-2">Click to make payment</a>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            document.getElementById('cancelPay').addEventListener('click', function () {
+            document.getElementById('total').innerText = '000';
+    });
+        </script>

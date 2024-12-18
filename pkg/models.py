@@ -86,11 +86,13 @@ class Payment(db.Model):
     __tablename__ = 'payments'
     pay_id = db.Column(db.Integer, primary_key=True)
     pay_order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), nullable=False)
-    pay_amt = db.Column(db.String(45), nullable=False)
-    pay_status = db.Column(db.String(45), nullable=False)
+    pay_rest_id = db.Column(db.Integer, db.ForeignKey('restaurants.rest_id'))
+    pay_amt = db.Column(db.Float(), nullable=True)
+    pay_status= db.Column(db.Enum('pending','paid','failed'), nullable=False, server_default=("pending"))
     reference_num = db.Column(db.String(45), nullable=False)
     date_paid = db.Column(db.DateTime(), default=datetime.utcnow)
-
+    
+    rest = db.relationship("Restaurant",backref="mypayments")
 
 class Admin(db.Model):
     __tablename__ = 'admin'

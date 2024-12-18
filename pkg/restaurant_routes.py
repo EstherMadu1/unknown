@@ -1,10 +1,14 @@
+import requests
+import os, random, json
 from flask import current_app as app
 from flask import render_template, redirect, flash, request, session
 from flask_wtf.csrf import CSRFError
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 from pkg.forms import Restaurantsignform, Restaurantlogform
-from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem, Order, OrderItem, Admin
+from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem, Order, OrderItem, Admin, Order, Payment
+
 
 
 @app.after_request
@@ -174,60 +178,105 @@ def remove_from_cart(cart_item_id):
     return redirect('/cart/')
 
 
-@app.route('/checkout/', methods=['POST'])
+@app.route('/checkout/', methods=['GET', 'POST'])  
 def checkout():
-    if 'restaurant_loggedin' not in session:
-        flash('You need to log in to proceed with checkout!', 'error')
-        return redirect('/restaurant-login/')
-
     restaurant_id = session['restaurant_loggedin']
     cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+    if request.method == 'GET':
+        get_total_amt = db.session.query(Order.total_amt).filter(Order.restaurant_id == restaurant_id).scalar()
+        return render_template('user_restaurant/checkout.html', get_total_amt=get_total_amt)
+        
+    else:
+        if 'restaurant_loggedin' not in session:
+            flash('You need to log in to proceed with checkout!', 'error')
+            return redirect('/restaurant-login/')
 
-    if not cart_items:
-        flash('Your cart is empty!', 'error')
-        return redirect('/cart/')
+        if not cart_items:
+            flash('Your cart is empty!', 'error')
+            return redirect('/cart/')
 
-    total_amt = sum(
-        item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
-        for item in cart_items
-    )
-
-    new_order = Order(
-        restaurant_id=restaurant_id,
-        total_amt=total_amt,
-        order_stat='Pending'
-    )
-    db.session.add(new_order)
-    db.session.commit()
-
-    for item in cart_items:
-        order_item = OrderItem(
-            order_id=new_order.order_id,
-            pro_id=item.pro_id,
-            quantity=item.cart_quantity
+        total_amt = sum(
+            item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
+            for item in cart_items
         )
-        db.session.add(order_item)
-        db.session.delete(item)
 
-    db.session.commit()
+        new_order = Order(
+            restaurant_id=restaurant_id,
+            total_amt=total_amt,
+            order_stat='Pending'
+        )
+        db.session.add(new_order)
+        db.session.commit()
+        ref = int(random.random() * 10000000000)
+        session['refno'] = ref
+        pay_deets = Payment(
+            pay_order_id = new_order.order_id,
+            pay_amt = total_amt, reference_num=ref    
+        ) 
+        
+        db.session.add(pay_deets)
+        db.session.commit()
 
-    flash('Order placed successfully!', 'success')
-    return redirect('/restaurant-dashboard/')
+        for item in cart_items:
+            order_item = OrderItem(
+                order_id=new_order.order_id,
+                pro_id=item.pro_id,
+                quantity=item.cart_quantity
+            )
+            db.session.add(order_item)
+            db.session.delete(item)
 
-
-
-# @app.route('/delivered-orders/')
-# def restaurant_orders():
-#     restaurant_id = session.get("restaurant_loggedin")
+        db.session.commit()
+        flash('Order placed successfully!', 'success')
+        return redirect('/checkout/')
     
-#     if not restaurant_id
-#     restaurant = Restaurant.query.get(restaurant_id)
-#     for order in restaurant.orders:
-#         print(f"Order ID: {order.order_id}, Date: {order.order_date}, Status: {order.order_stat}")
-#     for item in order.order_items:
-#         print(f"  Product: {item.product.pro_name}, Category: {item.product.category.category_name}, Quantity: {item.quantity}")
-#     return 'check'
-    
+
+@app.route('/pay/', methods=['GET', 'POST'])
+def restaurant_payment():
+    restaurant_id = session.get("restaurant_loggedin")
+    ref_no = session.get('refno')
+    if restaurant_id is not None:
+        rest_deets = db.session.query(Restaurant).get(restaurant_id)
+        
+        if ref_no is not None:
+            trxdeets = db.session.query(Payment).filter(Payment.reference_num == ref_no).first()
+            
+            if request.method == 'GET':
+                return render_template('user_restaurant/pay.html', rest_deets=rest_deets, trxdeets=trxdeets)
+            else:  
+                url = "https://api.paystack.co/transaction/initialize"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer sk_test_ccb7954503326136a4d8e698a2d13c455982ade2"
+                }
+                amt_kobo = int(trxdeets.pay_amt * 100)  # 
+
+                data = {
+                    "reference": ref_no,
+                    "amount": amt_kobo,
+                    "email": trxdeets.rest.rest_email,
+                    "callback_url": "http://127.0.0.1:5000/payment/update/"
+                }
+
+                
+                response = requests.post(url, headers=headers, data=json.dumps(data))
+                json_response = json.loads(response.text)
+                
+                status = json_response['status']
+                if status:  
+                    authurl = json_response['data']['authorization_url']
+                    return redirect(authurl)  
+                else:
+                    flash('Error: ' + json_response.get('message', 'Something went wrong'))
+                    return redirect('/checkout/') 
+        else:
+            flash('Error: Please start the transaction from here.')
+            return redirect('/checkout/')
+    else:
+        flash('Error: You must be logged in.')
+        return redirect('/restaurant-login/')
+
+
     
 
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
@@ -261,10 +310,7 @@ def rest_signup():
                 print(f"Plain Password: {password}")
                 flash('An account has been created for you', 'success')
                 return redirect('/restaurant-login/')
-        else:
-            for field, errors in restaurant.errors.items():
-                for error in errors:
-                    flash(f"Error in {field}: {error}", 'error')
+
 
     return render_template('user_restaurant/restaurant_signup.html', restaurant=restaurant)
 
@@ -292,10 +338,10 @@ def rest_login():
                     session["restaurant_loggedin"] = check_record.rest_id
                     return redirect('/restaurant-dashboard/')
                 else:
-                    flash('Invalid Password', 'error')
+                    flash('Invalid Password', 'errors')
                     return redirect('/restaurant-login/')
             else:
-                flash('Invalid Email', 'error')
+                flash('Invalid Email', 'errors')
                 return redirect('/restaurant-login/')
 
     return render_template('user_restaurant/restaurant_login.html', restaurant=restaurant)

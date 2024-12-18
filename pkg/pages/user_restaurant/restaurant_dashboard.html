@@ -1,133 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Dashboard</title>
-    <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/assets/css/restaurant-dashboard.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/assets/css/style.css" />
-
-</head>
-<body class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 sidebar d-flex flex-column p-3">
-            
-            <ul class="nav flex-column">
-              <li>
-                <a class="navbar-brand" href="#"
-          ><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo my-5"
-        /></a>
-              </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" onclick="showSection('orderTracking', this)">Order tracking</a>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('deliveredOrders', this)">Delivered Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('reportFarmer', this)">Report Farmer</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/" >Back To Home</a>
-              </li>
-            </ul>
-            <!-- Logout Button -->
-             
-            <div class="row mt-auto text-left">
-              <div class="col-7">
-  
-                <p class="">Hello {{restaurant_name}}</p>
-              </div>
-              <div class="col-2">
-                <a href="/restaurant-logout/" class="btn btn-danger btn-sm" type="submit">Logout</a>
-              </div>
-            </div>
-        </div>
+{% include 'user_restaurant/rest_nav.html' %}
 
         <!-- Main Content -->
+
         <div class="col-md-9 content">
-          <!-- Order Tracking Section -->
-          <div id="orderTracking" class="section">
-            <h3>Order Tracking</h3>
-            <div class="card">
-              <div class="card-body">
-                <div class="order-item">
-                  <h5>Order #1001</h5>
-                  <div class="order-status">
-                    <span class="status-pending">Pending</span>
-                  </div>
-                </div>
-                <div class="order-item">
-                  <h5>Order #1002</h5>
-                  <div class="order-status">
-                    <span class="status-processed">Processed</span>
-                  </div>
-                </div>
-                <div class="order-item">
-                  <h5>Order #1003</h5>
-                  <div class="order-status">
-                    <span class="status-delivered">Delivered</span>
-                  </div>
-                </div>
-              </div>
+            <!-- Order Tracking Section -->
+            <div id="orderTracking" class="section">
+                <h3>Order Tracking</h3>
+                <p>Track your orders here.</p>
             </div>
-          </div>
-        
-          <!-- Report a Farmer Section -->
-          <div id="reportFarmer" class="section" style="display: none;">
-            <h3>Report a Farmer</h3>
-            <div class="card">
-              <div class="card-body">
+
+            <!-- Delivered Orders Section -->
+            <div id="deliveredOrders" class="section" style="display: none;">
+                <h3>Delivered Orders</h3>
+                <p>View all delivered orders here.</p>
+            </div>
+
+            <!-- Report Farmer Section -->
+            <div id="reportFarmer" class="section" style="display: none;">
+                <h3>Report a Farmer</h3>
                 <form>
-                  <div class="mb-3">
-                    <label for="farmerName" class="form-label">Farmer's Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="farmerName"
-                      placeholder="Enter farmer's name"
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="issueDetails" class="form-label">Details</label>
-                    <textarea
-                      class="form-control"
-                      id="issueDetails"
-                      rows="4"
-                      placeholder="Describe the issue"
-                    ></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-danger">
-                    Submit Report
-                  </button>
+                    <div class="mb-3">
+                        <label for="farmerName" class="form-label">Farmer's Name</label>
+                        <input type="text" class="form-control" id="farmerName" placeholder="Enter farmer's name" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="issueDetails" class="form-label">Details</label>
+                        <textarea class="form-control" id="issueDetails" rows="4" placeholder="Describe the issue"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Submit Report</button>
                 </form>
-              </div>
             </div>
-          </div>
+
+            
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
         function showSection(sectionId, link) {
             // Hide all sections
-            var sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-            });
-            
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.style.display = 'none');
+
             // Show the selected section
-            document.getElementById(sectionId).style.display = 'block';
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
 
-            // Remove active class from all nav links
-            var links = document.querySelectorAll('.sidebar .nav-link');
-            links.forEach(link => {
-                link.classList.remove('active');
-            });
+            // Remove 'active' class from all links
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(nav => nav.classList.remove('active'));
 
-            // Add active class to the clicked link
+            // Add 'active' class to the clicked link
             link.classList.add('active');
         }
     </script>

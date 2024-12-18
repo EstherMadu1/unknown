@@ -53,7 +53,7 @@ def handle_farmer_signup():
                                     farmer_password=hashed)
                 db.session.add(push_to_db)
                 db.session.commit()
-                flash("feedback", 'An account has been created for you')
+                flash('An account has been created for you',"feedback" )
                 return redirect('/farmer-login/')
     return render_template('user_farmer/farmer_signup.html', farmer=farmer)
 
@@ -166,4 +166,4 @@ def farmer_add_product():
     db.session.commit()
 
     flash('Product added successfully!', 'success')
-    return redirect(url_for('farmer_dashboard'))
+    return redirect("/farmer-add-product/")

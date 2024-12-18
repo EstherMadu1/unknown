@@ -48,7 +48,16 @@
         </div>
     </div>
     <div class="col-md-9 content">
-
+        {% set message = get_flashed_messages(with_categories=True) %}
+  {% if message %}
+  {% for msg , cat in message %}
+  {% if cat == 'errormsg' %}
+  <div class="alert alert-danger">{{msg}}</div>
+  {% else %}
+  <div class="alert alert-success">{{msg}}</div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
         <div id="addProduct" class="section">
             <h3>Add Product</h3>
 
