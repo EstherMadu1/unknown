@@ -149,17 +149,11 @@ def farmer_add_product():
         farm_id=farmer_id  
     )
 
-    # Handle file upload and save it to static/uploaded directory
     if form.pro_picture.data:
-        # Ensure the static/uploaded directory exists
         upload_folder = os.path.join(app.root_path, 'static', 'uploaded')
-
-        # Secure the filename and save it
         filename = secure_filename(form.pro_picture.data.filename)
         file_path = os.path.join(upload_folder, filename)
         form.pro_picture.data.save(file_path)
-
-        # Save the relative file path in the database
         new_product.pro_picture = filename
 
     db.session.add(new_product)

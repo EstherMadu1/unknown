@@ -65,10 +65,3 @@ def admin_logout():
 
 
 
-# @app.route('/delete-farmer/<int:farm_id>', methods=['POST'])
-# def delete_farmer(farm_id):
-#     farmer = Farmer.query.get_or_404(farm_id)  # Use correct argument name
-#     db.session.delete(farmer)  # Delete farmer from the database
-#     db.session.commit()  # Commit changes
-#     flash(f"Farmer with ID {farm_id} has been deleted successfully.", "success")
-#     return redirect(url_for('admin_show_farmer'))

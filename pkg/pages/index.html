@@ -8,8 +8,7 @@
           Connecting Fresh Farm Produce Directly to Restaurants
         </h1>
         <p style="max-width: 600px;">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, illum hic rerum nostrum nemo laudantium
-          odio. Ducimus ea quasi reiciendis?
+          Harvest Hub delivers farm-fresh produce straight to your door. For farmers, we eliminate the trouble of middlemen, making it a win-win for everyone!
         </p>
         <a href="/products/" class="btn btn-success btn-lg mt-4">Explore Fresh Produce</a>
       </div>
@@ -42,21 +41,20 @@
       <h2 class="fs-1 mb-5 text-center mx-auto" style="max-width: 500px;">From the farm to your doorstep</h2>
       <section class="row">
         <div class="col-md-4">
-          <img src="static/assets/images/fruits-veggies.png" alt="fruit and vegetables"
+          <img src="/static/assets/images/fruits-veggies.png" alt="fruit and vegetables"
             class="img-fluid border rounded-4 mb-2" />
           <h5 class="fs-5">Fruits And Vegetables</h5>
-          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"><span>Shop
-              now</span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
+          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"> <a href="/products/?product_name=Vegetables" class="text-decoration-none text-secondary">Shop Now</a><span></span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
         </div>
         <div class="col-md-4">
-          <img src="static/assets/images/yam-plantain.png" alt="yam and plantain"
+          <img src="/static/assets/images/yam-plantain.png" alt="yam and plantain"
             class="img-fluid border rounded-4 mb-2" />
-          <h5 class="fs-5">Barn Products</h5>
+          <h5 class="fs-5">Legumes</h5>
           <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"><span>Shop
               now</span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
         </div>
         <div class="col-md-4">
-          <img src="static/assets/images/yam-plantain.png" alt="yam and plantain"
+          <img src="static/assets/images/legumes.png" alt="yam and plantain"
             class="img-fluid border rounded-4 mb-2" />
           <h5 class="fs-5">Barn Products</h5>
           <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"><span>Shop
@@ -111,54 +109,27 @@
     <div class="container">
       <h2 class="fs-1 mb-5 mx-auto text-white" style="max-width: 500px;">Some of our amazing deals</h2>
       <div class="row">
+        {% for product in products %}
         <div class="col-md-3">
           <div class="card rounded-4 overflow-hidden">
-            <img src="static/assets/images/tomato.jpg" class="card-img-top" alt="Product 1" />
+            {% if product.pro_picture %}
+                    <img src="{{ url_for('static', filename='uploaded/' + product.pro_picture) }}"
+                         class="card-img-top mb-3 border" alt="{{ product.pro_name }}"/>
+                    {% else %}
+                    <img src="{{ url_for('static', filename='assets/images/default-product.jpg') }}"
+                         class="card-img-top" alt="No image available"/>
+                    {% endif %}
+            <!-- <img src={{product.pro_picture}} class="card-img-top" alt="Product 1" /> -->
             <div class="card-body px-4">
-              <h5 class="fs-6">Fresh Tomatoes</h5>
-              <p class="price lh-1">₦500</p>
+              <h5 class="fs-6">{{product.pro_name}}</h5>
+              <p class="price lh-1">{{product.price_per_unit}}</p>
               <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center">
-                <i class="fa fa-cart-plus fs-6 me-2"></i> Add to Cart
+                <i class="fa fa-cart-plus fs-6 me-2"></i> <a href="/products/" class="text-decoration-none text-secondary">Shop Now</a>
               </button>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="card rounded-4 overflow-hidden">
-            <img src="static/assets/images/tomato.jpg" class="card-img-top" alt="Product 1" />
-            <div class="card-body px-4">
-              <h5 class="fs-6">Fresh Tomatoes</h5>
-              <p class="price lh-1">₦500</p>
-              <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center">
-                <i class="fa fa-cart-plus fs-6 me-2"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card rounded-4 overflow-hidden">
-            <img src="static/assets/images/tomato.jpg" class="card-img-top" alt="Product 1" />
-            <div class="card-body px-4">
-              <h5 class="fs-6">Fresh Tomatoes</h5>
-              <p class="price lh-1">₦500</p>
-              <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center">
-                <i class="fa fa-cart-plus fs-6 me-2"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card rounded-4 overflow-hidden">
-            <img src="static/assets/images/tomato.jpg" class="card-img-top" alt="Product 1" />
-            <div class="card-body px-4">
-              <h5 class="fs-6">Fresh Tomatoes</h5>
-              <p class="price lh-1">₦500</p>
-              <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center">
-                <i class="fa fa-cart-plus fs-6 me-2"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
+        {% endfor %}
       </div>
       <br><br><br><br>
     </div>
@@ -211,65 +182,6 @@
   <br><br>
   <br><br>
 </section>
-<section class="reviews section">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card rounded-4 card-padding">
-          <!-- Add d-flex and justify-content-center here -->
-          <div class="d-flex justify-content-center">
-            <div class="col-md-3 my-3">
-              <img src="static/assets/images/reviews/farm-e.jpg" alt="an image of a farmer"
-                class="rounded-circle object-fit-cover" style="width: 100px; height: 100px;" />
-            </div>
-          </div>
-          <p class="mt-4 text-dark text-center fw-semibold">@reviewer_name</p>
-          <p class="text-dark text-center">
-            "I’ve been using Farm to People for over 2 years now. I love the
-            fact that the produce is sourced locally, which reduces travel time,
-            waste, and emissions. It’s also a great way to support local farms &
-            farmers."
-          </p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card rounded-4 card-padding">
-          <!-- Add d-flex and justify-content-center here -->
-          <div class="d-flex justify-content-center">
-            <div class="col-md-3 my-3">
-              <img src="static/assets/images/reviews/farm-e.jpg" alt="an image of a farmer"
-                class="rounded-circle object-fit-cover" style="width: 100px; height: 100px;" />
-            </div>
-          </div>
-          <p class="mt-4 text-dark text-center fw-semibold">@reviewer_name</p>
-          <p class="text-dark text-center">
-            "I’ve been using Farm to People for over 2 years now. I love the
-            fact that the produce is sourced locally, which reduces travel time,
-            waste, and emissions. It’s also a great way to support local farms &
-            farmers."
-          </p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card rounded-4 card-padding">
-          <!-- Add d-flex and justify-content-center here -->
-          <div class="d-flex justify-content-center">
-            <div class="col-md-3 my-3">
-              <img src="static/assets/images/reviews/farm-e.jpg" alt="an image of a farmer"
-                class="rounded-circle object-fit-cover" style="width: 100px; height: 100px;" />
-            </div>
-          </div>
-          <p class="mt-4 text-dark text-center fw-semibold">@reviewer_name</p>
-          <p class="text-dark text-center">
-            "I’ve been using Farm to People for over 2 years now. I love the
-            fact that the produce is sourced locally, which reduces travel time,
-            waste, and emissions. It’s also a great way to support local farms &
-            farmers."
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 {% include 'footer.html' %}

@@ -32,6 +32,28 @@ def home():
     farmer_deets = None
     rest_deets = None
     admin_deets = None
+    products = (
+        db.session.query(Product)
+        .distinct(Product.pro_category_id)  
+        .limit(4)
+        .all()
+    )
+    
+    cart_items = []
+    if 'restaurant_loggedin' in session:
+        restaurant_id = session['restaurant_loggedin']
+        user_cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+        for item in user_cart_items:
+            product = db.session.query(Product).filter_by(pro_id=item.pro_id).first()
+            if product:
+                cart_items.append({
+                    'pro_id': item.pro_id,
+                    'cart_item_id': item.cart_item_id,
+                    'product_name': product.pro_name,
+                    'quantity': item.cart_quantity,
+                    'price_per_unit': float(product.price_per_unit),
+                    'total_price': float(item.cart_quantity * product.price_per_unit)
+                })
 
     if farmer_id:
         farmer_deets = db.session.query(Farmer).get(farmer_id)
@@ -42,7 +64,7 @@ def home():
     if admin_id:
         admin_deets = db.session.query(Admin).get(admin_id)
 
-    return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets, admin_deets=admin_deets)
+    return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets, admin_deets=admin_deets, products=products, cart_items=cart_items)
 
 
 
@@ -84,6 +106,7 @@ def get_cart():
     if 'restaurant_loggedin' not in session:
         flash('You need to log in to view your cart!', 'error')
         return redirect('/restaurant-login/')
+    print(db.session.query(CartItem).first())
 
     restaurant_id = session['restaurant_loggedin']
     cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
@@ -120,8 +143,9 @@ def add_to_cart():
         return redirect('/products/')
 
     existing_cart_item = db.session.query(CartItem).filter_by(pro_id=pro_id, restaurant_id=restaurant_id).first()
-
+    print(1)
     if existing_cart_item:
+        print(2)
         existing_cart_item.cart_quantity += quantity
     else:
         new_cart_item = CartItem(
@@ -130,8 +154,10 @@ def add_to_cart():
             restaurant_id=restaurant_id
         )
         db.session.add(new_cart_item)
+        print("i failed ")
 
     db.session.commit()
+    
     flash('Item added to cart!', 'success')
     return redirect('/cart/')
 
@@ -180,12 +206,18 @@ def remove_from_cart(cart_item_id):
 
 @app.route('/checkout/', methods=['GET', 'POST'])  
 def checkout():
+    print(db.session.query(CartItem).first())
     restaurant_id = session['restaurant_loggedin']
     cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+    total_amt = sum(
+            item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
+            for item in cart_items
+        )
     if request.method == 'GET':
-        get_total_amt = db.session.query(Order.total_amt).filter(Order.restaurant_id == restaurant_id).scalar()
-        return render_template('user_restaurant/checkout.html', get_total_amt=get_total_amt)
+        restaurant_name = db.session.query(Restaurant).filter_by(rest_id=restaurant_id).first().rest_name
         
+        return render_template('user_restaurant/checkout.html', restaurant_name=restaurant_name, total_amt=total_amt)
+    
     else:
         if 'restaurant_loggedin' not in session:
             flash('You need to log in to proceed with checkout!', 'error')
@@ -195,16 +227,14 @@ def checkout():
             flash('Your cart is empty!', 'error')
             return redirect('/cart/')
 
-        total_amt = sum(
-            item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
-            for item in cart_items
-        )
-
+       
+        
         new_order = Order(
             restaurant_id=restaurant_id,
             total_amt=total_amt,
             order_stat='Pending'
         )
+        
         db.session.add(new_order)
         db.session.commit()
         ref = int(random.random() * 10000000000)
