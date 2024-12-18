@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .status-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #F44336;
+        }
+        .message {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .button.success {
+            background-color: #4CAF50;
+        }
+        .button.success:hover {
+            background-color: #45A049;
+        }
+        .button.error {
+            background-color: #F44336;
+        }
+        .button.error:hover {
+            background-color: #E53935;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if successful %}
+            <div class="status-icon success">✔️</div>
+            <div class="message">Your payment was successful! Thank you for your order.</div>
+            <a href="/products/" class="button success">View Products</a>
+        {% else %}
+            <div class="status-icon error">❌</div>
+            <div class="message">Your payment could not be verified. Please try again or contact support.</div>
+            <a href="/contact-support/" class="button error">Contact Support</a>
+            <a href="/cart/" class="button">View Cart</a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -5,10 +5,8 @@ from flask import render_template, redirect, flash, request, session
 from flask_wtf.csrf import CSRFError
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 from pkg.forms import Restaurantsignform, Restaurantlogform
 from pkg.models import db, Restaurant, Farmer, Product, Category, CartItem, Order, OrderItem, Admin, Order, Payment
-
 
 
 @app.after_request
@@ -34,11 +32,11 @@ def home():
     admin_deets = None
     products = (
         db.session.query(Product)
-        .distinct(Product.pro_category_id)  
+        .distinct(Product.pro_category_id)
         .limit(4)
         .all()
     )
-    
+
     cart_items = []
     if 'restaurant_loggedin' in session:
         restaurant_id = session['restaurant_loggedin']
@@ -57,15 +55,14 @@ def home():
 
     if farmer_id:
         farmer_deets = db.session.query(Farmer).get(farmer_id)
-        
+
     if restaurant_id:
         rest_deets = db.session.query(Restaurant).get(restaurant_id)
-    
+
     if admin_id:
         admin_deets = db.session.query(Admin).get(admin_id)
 
     return render_template('index.html', farmer_deets=farmer_deets, rest_deets=rest_deets, admin_deets=admin_deets, products=products, cart_items=cart_items)
-
 
 
 # Route for the products page
@@ -106,7 +103,6 @@ def get_cart():
     if 'restaurant_loggedin' not in session:
         flash('You need to log in to view your cart!', 'error')
         return redirect('/restaurant-login/')
-    print(db.session.query(CartItem).first())
 
     restaurant_id = session['restaurant_loggedin']
     cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
@@ -125,7 +121,8 @@ def get_cart():
                 'total_price': float(item.cart_quantity * product.price_per_unit)
             })
 
-    return render_template('user_restaurant/cart.html', cart_items=cart_details)
+    return render_template('user_restaurant/cart.html',
+                           cart_items=cart_details)
 
 
 @app.route('/cart/add/', methods=['POST'])
@@ -143,9 +140,8 @@ def add_to_cart():
         return redirect('/products/')
 
     existing_cart_item = db.session.query(CartItem).filter_by(pro_id=pro_id, restaurant_id=restaurant_id).first()
-    print(1)
+
     if existing_cart_item:
-        print(2)
         existing_cart_item.cart_quantity += quantity
     else:
         new_cart_item = CartItem(
@@ -154,10 +150,8 @@ def add_to_cart():
             restaurant_id=restaurant_id
         )
         db.session.add(new_cart_item)
-        print("i failed ")
 
     db.session.commit()
-    
     flash('Item added to cart!', 'success')
     return redirect('/cart/')
 
@@ -204,110 +198,110 @@ def remove_from_cart(cart_item_id):
     return redirect('/cart/')
 
 
-@app.route('/checkout/', methods=['GET', 'POST'])  
+@app.route('/checkout/', methods=['GET', 'POST'])
 def checkout():
-    print(db.session.query(CartItem).first())
     restaurant_id = session['restaurant_loggedin']
-    cart_items = db.session.query(CartItem).filter_by(restaurant_id=restaurant_id).all()
+    cart_items = db.session.query(CartItem
+                                  ).filter_by(
+        restaurant_id=restaurant_id).all()
+    if 'restaurant_loggedin' not in session:
+        flash('You need to log in to proceed with checkout!', 'error')
+        return redirect('/restaurant-login/')
+
+    if not cart_items:
+        flash('Your cart is empty!', 'error')
+        return redirect('/cart/')
+
+    if request.method == "GET":
+        ref_no = session.get('refno')
+        orddeets = db.session.query(Order).filter(Order.order_reference == ref_no).first()
+        if not orddeets:
+            orddeets = db.session.query(Order).filter_by(
+                restaurant_id=restaurant_id,
+                order_stat='Pending').first()
+            if not orddeets:
+                return redirect('/cart/')
+        session['refno'] = orddeets.order_reference
+        return redirect('/pay/')
+
     total_amt = sum(
-            item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
-            for item in cart_items
-        )
-    if request.method == 'GET':
-        restaurant_name = db.session.query(Restaurant).filter_by(rest_id=restaurant_id).first().rest_name
-        
-        return render_template('user_restaurant/checkout.html', restaurant_name=restaurant_name, total_amt=total_amt)
-    
-    else:
-        if 'restaurant_loggedin' not in session:
-            flash('You need to log in to proceed with checkout!', 'error')
-            return redirect('/restaurant-login/')
+        item.cart_quantity * db.session.query(Product.price_per_unit).filter_by(pro_id=item.pro_id).scalar()
+        for item in cart_items
+    )
+    ref = int(random.random() * 10000000000)
+    new_order = Order(
+        restaurant_id=restaurant_id,
+        order_reference=ref,
+        total_amt=total_amt,
+        order_stat='Pending'
+    )
+    db.session.add(new_order)
+    db.session.commit()
+    session['refno'] = ref
 
-        if not cart_items:
-            flash('Your cart is empty!', 'error')
-            return redirect('/cart/')
+    flash('Order placed successfully!', 'success')
+    return redirect('/pay/')
 
-       
-        
-        new_order = Order(
-            restaurant_id=restaurant_id,
-            total_amt=total_amt,
-            order_stat='Pending'
-        )
-        
-        db.session.add(new_order)
-        db.session.commit()
-        ref = int(random.random() * 10000000000)
-        session['refno'] = ref
-        pay_deets = Payment(
-            pay_order_id = new_order.order_id,
-            pay_amt = total_amt, reference_num=ref    
-        ) 
-        
-        db.session.add(pay_deets)
-        db.session.commit()
-
-        for item in cart_items:
-            order_item = OrderItem(
-                order_id=new_order.order_id,
-                pro_id=item.pro_id,
-                quantity=item.cart_quantity
-            )
-            db.session.add(order_item)
-            db.session.delete(item)
-
-        db.session.commit()
-        flash('Order placed successfully!', 'success')
-        return redirect('/checkout/')
-    
 
 @app.route('/pay/', methods=['GET', 'POST'])
 def restaurant_payment():
     restaurant_id = session.get("restaurant_loggedin")
     ref_no = session.get('refno')
-    if restaurant_id is not None:
-        rest_deets = db.session.query(Restaurant).get(restaurant_id)
-        
-        if ref_no is not None:
-            trxdeets = db.session.query(Payment).filter(Payment.reference_num == ref_no).first()
-            
-            if request.method == 'GET':
-                return render_template('user_restaurant/pay.html', rest_deets=rest_deets, trxdeets=trxdeets)
-            else:  
-                url = "https://api.paystack.co/transaction/initialize"
-                headers = {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer sk_test_ccb7954503326136a4d8e698a2d13c455982ade2"
-                }
-                amt_kobo = int(trxdeets.pay_amt * 100)  # 
 
-                data = {
-                    "reference": ref_no,
-                    "amount": amt_kobo,
-                    "email": trxdeets.rest.rest_email,
-                    "callback_url": "http://127.0.0.1:5000/payment/update/"
-                }
-
-                
-                response = requests.post(url, headers=headers, data=json.dumps(data))
-                json_response = json.loads(response.text)
-                
-                status = json_response['status']
-                if status:  
-                    authurl = json_response['data']['authorization_url']
-                    return redirect(authurl)  
-                else:
-                    flash('Error: ' + json_response.get('message', 'Something went wrong'))
-                    return redirect('/checkout/') 
-        else:
-            flash('Error: Please start the transaction from here.')
-            return redirect('/checkout/')
-    else:
+    if not restaurant_id:
         flash('Error: You must be logged in.')
         return redirect('/restaurant-login/')
 
+    if not ref_no:
+        flash('Error: Please start the transaction from here.')
+        return redirect('/products/')
 
-    
+    rest_deets = db.session.query(Restaurant).get(restaurant_id)
+
+    orddeets = db.session.query(Order).filter(Order.order_reference == ref_no).first()
+    print(orddeets)
+    if request.method == 'GET':
+        return render_template('user_restaurant/pay.html',
+                               rest_deets=rest_deets,
+                               trxdeets=orddeets)
+
+    pay_deets = Payment(
+        pay_order_id=orddeets.order_id,
+        pay_amt=orddeets.total_amt,
+        reference_num=orddeets.order_reference
+    )
+
+    db.session.add(pay_deets)
+    db.session.commit()
+
+    url = "https://api.paystack.co/transaction/initialize"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer sk_test_ccb7954503326136a4d8e698a2d13c455982ade2"
+    }
+    amt_kobo = int(orddeets.total_amt * 100)  #
+
+    data = {
+        "reference": ref_no,
+        "amount": amt_kobo,
+        "email": rest_deets.rest_email,
+        "callback_url": "http://127.0.0.1:5000/payment_validate"
+    }
+
+    response = requests.post(url, headers=headers,
+                             data=json.dumps(data))
+    print(response.content)
+    json_response = response.json()
+    print(json_response)
+
+    status = json_response['status']
+    if status:
+        authurl = json_response['data']['authorization_url']
+        return redirect(authurl)
+    flash('Error: ' + json_response.get(
+        'message', 'Something went wrong'))
+    return redirect('/products/')
+
 
 @app.route('/restaurant-signup/', methods=['GET', 'POST'])
 def rest_signup():
@@ -340,7 +334,6 @@ def rest_signup():
                 print(f"Plain Password: {password}")
                 flash('An account has been created for you', 'success')
                 return redirect('/restaurant-login/')
-
 
     return render_template('user_restaurant/restaurant_signup.html', restaurant=restaurant)
 
@@ -395,3 +388,65 @@ def restaurant_logout():
     session.pop('restaurant_loggedin', None)
     return redirect('/')
 
+
+@app.route("/payment_validate")
+def validate_payment():
+    """
+    Validate a payment using the Paystack API and update order/payment statuses.
+    """
+    # Get the reference number from query parameters
+    reference = request.args.get('reference')
+    if not reference:
+        return "Invalid request: Missing reference number.", 400  # Return bad request if no reference is provided
+
+    # Check if the payment already exists and is marked as paid
+    payment_details = db.session.query(Payment).filter(Payment.reference_num == reference).first()
+    if payment_details and payment_details.pay_status == "paid":
+        return redirect("/products/")  # Redirect if payment is already completed
+
+    # Verify the payment with Paystack
+    url = f"https://api.paystack.co/transaction/verify/{reference}"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer sk_test_ccb7954503326136a4d8e698a2d13c455982ade2"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx and 5xx)
+        json_response = response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error verifying payment: {e}")
+        return "Error verifying payment. Please try again later.", 500
+
+    # Extract data from the response
+    data = json_response.get("data")
+    if not data or data.get("status") != "success":
+        print(f"Payment verification failed: {json_response}")
+        return render_template('user_restaurant/order_completed.html', successful=False)
+
+    # Update order and payment details
+    order_details = db.session.query(Order).filter(Order.order_reference == reference).first()
+    if not order_details or not payment_details:
+        return "Order or payment details not found.", 404  # Return not found if details are missing
+
+    # Update statuses
+    order_details.order_stat = "successful"
+    payment_details.pay_status = "paid"
+    payment_details.paystack_transaction_reference = data.get('reference')
+    cart_items = db.session.query(CartItem
+                                  ).filter_by(
+        restaurant_id=order_details.restaurant_id).all()
+    for item in cart_items:
+        order_item = OrderItem(
+            order_id=order_details.order_id,
+            pro_id=item.pro_id,
+            quantity=item.cart_quantity
+        )
+        db.session.add(order_item)
+        db.session.delete(item)
+    db.session.commit()
+
+    # Render the success page
+    return render_template('user_restaurant/order_completed.html',
+                           successful=True)

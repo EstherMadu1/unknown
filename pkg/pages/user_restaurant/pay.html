@@ -9,13 +9,13 @@
 
     <form action="/pay/" method="post">
         <div class="mb-3">
-            <p>Amount &#8358; {{ trxdeets.pay_amt }}</p>
+            <p>Amount &#8358; {{ trxdeets.total_amt }}</p>
         </div>
         <div class="mb-3">
-            <label>Restaurant Name: {{ trxdeets.rest.rest_name }}</label>
+            <label>Restaurant Name: {{ rest_deets.rest_name }}</label>
         </div>
         <div class="mb-3">
-            <label class="text-danger">Transaction Ref: {{ trxdeets.reference_num }}</label>
+            <label class="text-danger">Order Ref: {{ trxdeets.order_reference }}</label>
             <label>Please take note of the above transaction ref</label>
         </div>
         <div class="mb-3">
