@@ -1,14 +1,15 @@
 {% include "index_nav.html" %}
 
-<main>
-  <header class="row hero-img">
+<main class="overflow-x-hidden">
+  <header class="hero-img">
     <div class="inner">
       <div class="container d-flex flex-column align-items-center justify-content-center text-light text-center">
         <h1 style="font-size: 4rem; max-width: 1000px;">
           Connecting Fresh Farm Produce Directly to Restaurants
         </h1>
         <p style="max-width: 600px;">
-          Harvest Hub delivers farm-fresh produce straight to your door. For farmers, we eliminate the trouble of middlemen, making it a win-win for everyone!
+          Harvest Hub delivers farm-fresh produce straight to your door. For farmers, we eliminate the trouble of
+          middlemen, making it a win-win for everyone!
         </p>
         <a href="/products/" class="btn btn-success btn-lg mt-4">Explore Fresh Produce</a>
       </div>
@@ -44,7 +45,9 @@
           <img src="/static/assets/images/fruits-veggies.png" alt="fruit and vegetables"
             class="img-fluid border rounded-4 mb-2" />
           <h5 class="fs-5">Fruits And Vegetables</h5>
-          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"> <a href="/products/?product_name=Vegetables" class="text-decoration-none text-secondary">Shop Now</a><span></span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
+          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"> <a
+              href="/products/?product_name=Vegetables" class="text-decoration-none text-secondary">Shop
+              Now</a><span></span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
         </div>
         <div class="col-md-4">
           <img src="/static/assets/images/yam-plantain.png" alt="yam and plantain"
@@ -54,8 +57,7 @@
               now</span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
         </div>
         <div class="col-md-4">
-          <img src="static/assets/images/legumes.png" alt="yam and plantain"
-            class="img-fluid border rounded-4 mb-2" />
+          <img src="static/assets/images/legumes.png" alt="yam and plantain" class="img-fluid border rounded-4 mb-2" />
           <h5 class="fs-5">Barn Products</h5>
           <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"><span>Shop
               now</span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
@@ -63,24 +65,22 @@
       </section>
     </div>
   </div>
-  <section class="row my-5 justify-content-center">
-    <div class="col-md-8 mt-md-5 text-center">
-      <h2>How does HarvestHub Work</h2>
-    </div>
-  </section>
-  <section class="row justify-content-center">
-    <aside class="col-md-2 d-flex flex-column align-items-center me-md-5">
-      <i class="fa-solid fa-right-to-bracket"></i>
-      <p class="ver-border d-none d-md-block mt-2"></p>
-    </aside>
-    <aside class="col-md-4 ms-md-5">
-      <h3>Sign Up</h3>
-      <p class="mt-2">
-        Easily crate an account with our fast and intuitive interface and
-        get right into shopping
-      </p>
-    </aside>
-  </section>
+  <div class="container-fluid overflow-hidden">
+    <h2 class="fs-1 mb-5 text-center mx-auto" style="max-width: 500px;">How does HarvestHub Work</h2>
+    <section class="row justify-content-center">
+      <aside class="col-md-2 d-flex flex-column align-items-center me-md-5">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <p class="ver-border d-none d-md-block mt-2"></p>
+      </aside>
+      <aside class="col-md-4 ms-md-5">
+        <h3>Sign Up</h3>
+        <p class="mt-2">
+          Easily crate an account with our fast and intuitive interface and
+          get right into shopping
+        </p>
+      </aside>
+    </section>
+  </div>
   <section class="row justify-content-center my-3">
     <aside class="col-2 d-flex flex-column align-items-center me-md-5">
       <i class="fa-solid fa-check"></i>
@@ -113,18 +113,19 @@
         <div class="col-md-3">
           <div class="card rounded-4 overflow-hidden">
             {% if product.pro_picture %}
-                    <img src="{{ url_for('static', filename='uploaded/' + product.pro_picture) }}"
-                         class="card-img-top mb-3 border" alt="{{ product.pro_name }}"/>
-                    {% else %}
-                    <img src="{{ url_for('static', filename='assets/images/default-product.jpg') }}"
-                         class="card-img-top" alt="No image available"/>
-                    {% endif %}
+            <img src="{{ url_for('static', filename='uploaded/' + product.pro_picture) }}"
+              class="card-img-top mb-3 border" alt="{{ product.pro_name }}" />
+            {% else %}
+            <img src="{{ url_for('static', filename='assets/images/default-product.jpg') }}" class="card-img-top"
+              alt="No image available" />
+            {% endif %}
             <!-- <img src={{product.pro_picture}} class="card-img-top" alt="Product 1" /> -->
             <div class="card-body px-4">
               <h5 class="fs-6">{{product.pro_name}}</h5>
               <p class="price lh-1">{{product.price_per_unit}}</p>
               <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center">
-                <i class="fa fa-cart-plus fs-6 me-2"></i> <a href="/products/" class="text-decoration-none text-secondary">Shop Now</a>
+                <i class="fa fa-cart-plus fs-6 me-2"></i> <a href="/products/"
+                  class="text-decoration-none text-secondary">Shop Now</a>
               </button>
             </div>
           </div>

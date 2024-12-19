@@ -1,137 +1,139 @@
 {% include 'navbar.html' %}
-<div class="col-md-5">
-  {% set message = get_flashed_messages(with_categories=True) %}
-  {% if message %}
-  {% for msg , cat in message %}
-  {% if cat == 'errormsg' %}
-  <div class="alert alert-danger">{{msg}}</div>
-  {% else %}
-  <div class="alert alert-success">{{msg}}</div>
-  {% endif %}
-  {% endfor %}
-  {% endif %}
-  <form action="/farmer-signup/" method="post" id="sign-form" novalidate>
-    {{ farmer.csrf_token() }}
-
-    <!-- Farmer Signup Form -->
-    <div class="farm-bg my-5 p-4 rounded" id="sign-farm">
-      <h3 class="text-center">Farmer Signup</h3>
-
-      <!-- Farm Name -->
-      <div class="mb-3">
-        {{ farmer.farm_name.label }}
-        {{ farmer.farm_name(class_='form-control', id='farm-name', placeholder='Enter your farm name') }}
-        {% if farmer.farm_name.errors %}
-        {% for error in farmer.farm_name.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
+<div class="container">
+  <div>
+    {% set message = get_flashed_messages(with_categories=True) %}
+    {% if message %}
+    {% for msg , cat in message %}
+    {% if cat == 'errormsg' %}
+    <div class="alert alert-danger">{{msg}}</div>
+    {% else %}
+    <div class="alert alert-success">{{msg}}</div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <form action="/farmer-signup/" method="post" id="sign-form" novalidate>
+      {{ farmer.csrf_token() }}
+  
+      <!-- Farmer Signup Form -->
+      <div class="farm-bg my-5 rounded-4 card-padding py-5" id="sign-farm" style="max-width: 700px; margin: auto;">
+        <h3 class="text-center">Farmer Signup</h3>
+  
+        <!-- Farm Name -->
+        <div class="mb-3">
+          {{ farmer.farm_name.label }}
+          {{ farmer.farm_name(class_='form-control', id='farm-name', placeholder='Enter your farm name') }}
+          {% if farmer.farm_name.errors %}
+          {% for error in farmer.farm_name.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- First Name -->
+        <div class="mb-3">
+          {{ farmer.firstname.label }}
+          {{ farmer.firstname(class_='form-control', id='first-name', placeholder='Enter your first name') }}
+          {% if farmer.firstname.errors %}
+          {% for error in farmer.firstname.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Last Name -->
+        <div class="mb-3">
+          {{ farmer.lastname.label }}
+          {{ farmer.lastname(class_='form-control', id='last-name', placeholder='Enter your last name') }}
+          {% if farmer.lastname.errors %}
+          {% for error in farmer.lastname.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Phone Number -->
+        <div class="mb-3">
+          {{ farmer.phone_number.label }}
+          {{ farmer.phone_number(class_='form-control', id='phone-number', placeholder='Enter your phone number') }}
+          {% if farmer.phone_number.errors %}
+          {% for error in farmer.phone_number.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- State Dropdown -->
+        <div class="mb-3">
+          {{ farmer.state.label }}
+          {{ farmer.state(class_='form-control', id='state') }}
+          {% if farmer.state.errors %}
+          {% for error in farmer.state.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Address -->
+        <div class="mb-3">
+          {{ farmer.address.label }}
+          {{ farmer.address(class_='form-control', id='address', placeholder='Enter your address') }}
+          {% if farmer.address.errors %}
+          {% for error in farmer.address.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Email -->
+        <div class="mb-3">
+          {{ farmer.email.label }}
+          {{ farmer.email(class_='form-control', id='email', placeholder='Enter your email address') }}
+          {% if farmer.email.errors %}
+          {% for error in farmer.email.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Username -->
+        <div class="mb-3">
+          {{ farmer.username.label }}
+          {{ farmer.username(class_='form-control', id='username', placeholder='Enter your username') }}
+          {% if farmer.username.errors %}
+          {% for error in farmer.username.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Password -->
+        <div class="mb-3">
+          {{ farmer.password.label }}
+          {{ farmer.password(class_='form-control', id='password', placeholder='Enter your password') }}
+          {% if farmer.password.errors %}
+          {% for error in farmer.password.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Confirm Password -->
+        <div class="mb-3">
+          {{ farmer.confirm_password.label }}
+          {{ farmer.confirm_password(class_='form-control', id='password', placeholder='Enter your password') }}
+          {% if farmer.confirm_password.errors %}
+          {% for error in farmer.password.errors %}
+          <span class="text-danger">{{ error }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+  
+        <!-- Submit Button -->
+        <div class="mb-3 col-md-5">
+          <button type="submit" class="col-12 btn btn-success" id="signup-button">Signup</button>
+        </div>
       </div>
-
-      <!-- First Name -->
-      <div class="mb-3">
-        {{ farmer.firstname.label }}
-        {{ farmer.firstname(class_='form-control', id='first-name', placeholder='Enter your first name') }}
-        {% if farmer.firstname.errors %}
-        {% for error in farmer.firstname.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Last Name -->
-      <div class="mb-3">
-        {{ farmer.lastname.label }}
-        {{ farmer.lastname(class_='form-control', id='last-name', placeholder='Enter your last name') }}
-        {% if farmer.lastname.errors %}
-        {% for error in farmer.lastname.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Phone Number -->
-      <div class="mb-3">
-        {{ farmer.phone_number.label }}
-        {{ farmer.phone_number(class_='form-control', id='phone-number', placeholder='Enter your phone number') }}
-        {% if farmer.phone_number.errors %}
-        {% for error in farmer.phone_number.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- State Dropdown -->
-      <div class="mb-3">
-        {{ farmer.state.label }}
-        {{ farmer.state(class_='form-control', id='state') }}
-        {% if farmer.state.errors %}
-        {% for error in farmer.state.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Address -->
-      <div class="mb-3">
-        {{ farmer.address.label }}
-        {{ farmer.address(class_='form-control', id='address', placeholder='Enter your address') }}
-        {% if farmer.address.errors %}
-        {% for error in farmer.address.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Email -->
-      <div class="mb-3">
-        {{ farmer.email.label }}
-        {{ farmer.email(class_='form-control', id='email', placeholder='Enter your email address') }}
-        {% if farmer.email.errors %}
-        {% for error in farmer.email.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Username -->
-      <div class="mb-3">
-        {{ farmer.username.label }}
-        {{ farmer.username(class_='form-control', id='username', placeholder='Enter your username') }}
-        {% if farmer.username.errors %}
-        {% for error in farmer.username.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Password -->
-      <div class="mb-3">
-        {{ farmer.password.label }}
-        {{ farmer.password(class_='form-control', id='password', placeholder='Enter your password') }}
-        {% if farmer.password.errors %}
-        {% for error in farmer.password.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Confirm Password -->
-      <div class="mb-3">
-        {{ farmer.confirm_password.label }}
-        {{ farmer.confirm_password(class_='form-control', id='password', placeholder='Enter your password') }}
-        {% if farmer.confirm_password.errors %}
-        {% for error in farmer.password.errors %}
-        <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        {% endif %}
-      </div>
-
-      <!-- Submit Button -->
-      <div class="mb-3 col-md-5">
-        <button type="submit" class="col-12 btn btn-success" id="signup-button">Signup</button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
 {% include 'footer.html' %}
