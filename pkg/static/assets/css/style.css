@@ -28,6 +28,13 @@ h4 {
   box-shadow: 0 6px 6px -5px rgba(0, 0, 0, 0.1);
 }
 
+.card > img,
+.card-body > img {
+  border-radius: 10px;
+  height: 150px;
+  object-fit: cover;
+}
+
 .card-padding {
   padding: 2rem;
 }
